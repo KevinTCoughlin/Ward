@@ -4,10 +4,8 @@ import org.parceler.Parcel;
 
 /**
  * @TODO: Implement the following data models
- * assists	long	Number of assists
     champLevel	long	Champion level achieved
     combatPlayerScore	long	If game was a dominion game, player's combat score, otherwise 0
-    deaths	long	Number of deaths
     doubleKills	long	Number of double kills
     firstBloodAssist	boolean	Flag indicating if participant got an assist on first blood
     firstBloodKill	boolean	Flag indicating if participant got first blood
@@ -26,7 +24,6 @@ import org.parceler.Parcel;
     item5	long	Sixth item ID
     item6	long	Seventh item ID
     killingSprees	long	Number of killing sprees
-    kills	long	Number of kills
     largestCriticalStrike	long	Largest critical strike
     largestKillingSpree	long	Largest killing spree
     largestMultiKill	long	Largest multi kill
@@ -71,7 +68,9 @@ import org.parceler.Parcel;
 @Parcel
 public class ParticipantStats {
     private boolean winner;
-
+    private long kills;
+    private long deaths;
+    private long assists;
     public ParticipantStats() {
 
     }
@@ -82,5 +81,29 @@ public class ParticipantStats {
 
     public void setWinner(boolean winner) {
         this.winner = winner;
+    }
+
+    public long getKills() {
+        return kills;
+    }
+
+    public void setKills(long kills) {
+        this.kills = kills;
+    }
+
+    public long getDeaths() {
+        return deaths;
+    }
+
+    public void setDeaths(long deaths) {
+        this.deaths = deaths;
+    }
+
+    public long getAssists() {
+        return assists;
+    }
+
+    public void setAssists(long assists) {
+        this.assists = assists;
     }
 }
