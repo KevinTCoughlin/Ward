@@ -62,20 +62,12 @@ public class MatchSummariesAdapter extends RecyclerView.Adapter<MatchSummariesAd
         final MatchSummary matchSummary = mMatchSummaries.get(position);
         final Champion champion = dbc.get(Champion.class, matchSummary.getParticipants().get(0).getChampionId());
         final ParticipantStats stats = matchSummary.getParticipants().get(0).getStats();
-        final boolean won = stats.isWinner();
-        final long kills = stats.getKills();
-        final long deaths = stats.getDeaths();
-        final long assists = stats.getAssists();
-        final int resultColor = (won) ? mContext.getResources().getColor(R.color.win) : mContext.getResources().getColor(R.color.loss);
-        //holder.mTextView.setText();
-        long createdAt = matchSummary.getMatchCreation();
-        holder.mTextView.setText(DateUtils.getRelativeDateTimeString(mContext, createdAt, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL));
-        holder.mTextView.setTextColor(resultColor);
+        final int resultColor = (stats.isWinner()) ? mContext.getResources().getColor(R.color.win) : mContext.getResources().getColor(R.color.loss);
+        final String statsString = String.format("%d/%d/%d", stats.getKills(), stats.getDeaths(), stats.getAssists());
+
+        holder.mTextView.setText(DateUtils.getRelativeDateTimeString(mContext,  matchSummary.getMatchCreation(), DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL));
         holder.mChampionArtworkImageView.setBorderColor(resultColor);
         holder.mChampionArtworkImageView.setBorderWidth(8);
-        //holder.mKillsTextView.setText(kills + " Kills");
-        //holder.mDeathsTextView.setText(deaths + " Deaths");
-        //holder.mAssistsTextView.setText(assists + " Assists");
 
         if (BuildConfig.DEBUG) {
             Picasso.with(mContext).setIndicatorsEnabled(true);
