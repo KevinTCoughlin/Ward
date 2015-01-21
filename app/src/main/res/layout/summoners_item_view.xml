@@ -24,6 +24,6 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/avatar"
         android:layout_toEndOf="@+id/avatar"
-        tools:text="Jooka"/>
+        tools:text="KING TRICK"/>
 
 </RelativeLayout>

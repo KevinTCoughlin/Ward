@@ -1,18 +1,21 @@
 package com.kevintcoughlin.sightstone.database;
 
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.kevintcoughlin.sightstone.models.Champion;
 import com.kevintcoughlin.sightstone.models.Summoner;
 
-public class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
+
+public final class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "sightstone.db";
     private static final int DATABASE_VERSION = 1;
 
     static {
         cupboard().register(Summoner.class);
+        cupboard().register(Champion.class);
     }
 
     public CupboardSQLiteOpenHelper(Context context) {

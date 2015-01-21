@@ -1,67 +1,41 @@
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
-    android:layout_gravity="center"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    card_view:cardCornerRadius="4dp">
+    android:padding="10dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/champion_artwork"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"/>
 
-        <ImageView
-            android:id="@+id/splash"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:contentDescription="@string/champion_artwork"
-            android:cropToPadding="false"/>
+    <TextView
+        android:maxLines="1"
+        android:id="@+id/champion_name"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textColor="#444"
+        android:textSize="14sp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/champion_artwork"
+        android:layout_toEndOf="@+id/champion_artwork"
+        tools:text="WIN"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/splash"
-            android:padding="10dp">
+    <TextView
+        android:maxLines="1"
+        android:id="@+id/stats"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textColor="#444"
+        android:textSize="14sp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/champion_artwork"
+        android:layout_toEndOf="@+id/champion_artwork"
+        tools:text="WIN"/>
 
-            <TextView
-                android:id="@+id/kills"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="11 Kills"
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/deaths"
-                android:layout_below="@+id/kills"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10 Deaths"
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/assists"
-                android:layout_below="@+id/deaths"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="13 Assists"
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/result"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:text="LOSS"
-                android:textSize="32sp" />
-
-        </RelativeLayout>
-
-    </RelativeLayout>
-
-</android.support.v7.widget.CardView>
+</RelativeLayout>

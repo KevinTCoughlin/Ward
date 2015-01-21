@@ -9,12 +9,15 @@ import android.widget.Toast;
 
 import com.kevintcoughlin.sightstone.adapters.MatchSummariesAdapter;
 import com.kevintcoughlin.sightstone.http.RiotGamesClient;
+import com.kevintcoughlin.sightstone.models.Champion;
 import com.kevintcoughlin.sightstone.models.MatchSummary;
 import com.kevintcoughlin.sightstone.models.Summoner;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +34,7 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
     private LinearLayoutManager mLayoutManager;
     private MatchSummariesAdapter mAdapter;
     private ArrayList<MatchSummary> mMatchSummaries = new ArrayList<>();
+    private HashMap<String, Champion> mChampions;
     private final String region = "na"; // @TODO: make configurable
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +47,10 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new MatchSummariesAdapter(this, mMatchSummaries);
-        mAdapter.setHasStableIds(true);
+        //mAdapter.setHasStableIds(true);
         mRecyclerView.setAdapter(mAdapter);
 
-        Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra("summoner"));
+        final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra("summoner"));
         RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), this);
     }
 
@@ -55,6 +59,8 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
         if (matchHistory == null || matchHistory.size() <= 0) {
             Toast.makeText(this, "No recent games found.", Toast.LENGTH_SHORT).show();
         } else {
+            // @TODO: Sort by created timestamp?
+            Collections.reverse(matchHistory);
             mMatchSummaries.addAll(matchHistory);
             mAdapter.notifyDataSetChanged();
         }
