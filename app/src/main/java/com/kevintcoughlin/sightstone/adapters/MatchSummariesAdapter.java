@@ -33,12 +33,11 @@ public class MatchSummariesAdapter extends RecyclerView.Adapter<MatchSummariesAd
     private DatabaseCompartment dbc;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.champion_name) TextView mTextView;
+        @InjectView(R.id.champion_name) TextView mChampionNameView;
         @InjectView(R.id.champion_artwork) CircleImageView mChampionArtworkImageView;
-        //@InjectView(R.id.kills) TextView mKillsTextView;
-        //@InjectView(R.id.deaths) TextView mDeathsTextView;
-        //@InjectView(R.id.assists) TextView mAssistsTextView;
-
+        @InjectView(R.id.stats) TextView mStatsTextView;
+        @InjectView(R.id.time) TextView mTimeView;
+        @InjectView(R.id.duration) TextView mDurationTextView;
 
         public ViewHolder(View v) {
             super(v);
@@ -46,26 +45,31 @@ public class MatchSummariesAdapter extends RecyclerView.Adapter<MatchSummariesAd
         }
     }
 
-    public MatchSummariesAdapter(Context context, ArrayList<MatchSummary> matchSummaries) {
+    public MatchSummariesAdapter(final Context context, final ArrayList<MatchSummary> matchSummaries) {
         mContext = context;
         mMatchSummaries = matchSummaries;
         db = new CupboardSQLiteOpenHelper(mContext);
         dbc = cupboard().withDatabase(db.getWritableDatabase());
     }
 
-    @Override public MatchSummariesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @Override public MatchSummariesAdapter.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.match_history_item_view, parent, false);
         return new ViewHolder(v);
     }
 
-    @Override public void onBindViewHolder(ViewHolder holder, int position) {
+    @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
         final MatchSummary matchSummary = mMatchSummaries.get(position);
         final Champion champion = dbc.get(Champion.class, matchSummary.getParticipants().get(0).getChampionId());
         final ParticipantStats stats = matchSummary.getParticipants().get(0).getStats();
         final int resultColor = (stats.isWinner()) ? mContext.getResources().getColor(R.color.win) : mContext.getResources().getColor(R.color.loss);
         final String statsString = String.format("%d/%d/%d", stats.getKills(), stats.getDeaths(), stats.getAssists());
+        final CharSequence relativeTime = DateUtils.getRelativeTimeSpanString(matchSummary.getMatchCreation(), System.currentTimeMillis(), DateUtils.DAY_IN_MILLIS);
+        final String durationString = String.valueOf(matchSummary.getMatchDuration() / 60) + " mins";
 
-        holder.mTextView.setText(DateUtils.getRelativeDateTimeString(mContext,  matchSummary.getMatchCreation(), DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL));
+        holder.mChampionNameView.setText(champion.getName());
+        holder.mTimeView.setText(relativeTime);
+        holder.mStatsTextView.setText(statsString);
+        holder.mDurationTextView.setText(durationString);
         holder.mChampionArtworkImageView.setBorderColor(resultColor);
         holder.mChampionArtworkImageView.setBorderWidth(8);
 
