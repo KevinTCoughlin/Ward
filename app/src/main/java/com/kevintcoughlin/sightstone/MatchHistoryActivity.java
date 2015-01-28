@@ -50,7 +50,23 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setOnScrollListener(new InfiniteRecyclerOnScrollListener(mLayoutManager) {
             @Override public void onLoadMore(final int currentPage) {
+                final int beginIndex = currentPage * 15;
+                final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra("summoner"));
+                RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), beginIndex, new Callback<Map<String, List<MatchSummary>>>() {
+                    @Override
+                    public void success(Map<String, List<MatchSummary>> matches, Response response) {
+                        ArrayList<MatchSummary> matchHistory = (ArrayList<MatchSummary>) matches.get("matches");
+                        // @TODO: Sort by created timestamp?
+                        Collections.reverse(matchHistory);
+                        mMatchSummaries.addAll(matchHistory);
+                        mAdapter.notifyDataSetChanged();
+                    }
 
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
             }
         });
 
@@ -59,7 +75,7 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
     }
 
     @Override public void success(Map<String, List<MatchSummary>> matches, Response response) {
-        ArrayList<MatchSummary> matchHistory = (ArrayList<MatchSummary>) matches.get("matches");
+        final ArrayList<MatchSummary> matchHistory = (ArrayList<MatchSummary>) matches.get("matches");
         if (matchHistory == null || matchHistory.size() <= 0) {
             Toast.makeText(this, "No recent games found.", Toast.LENGTH_SHORT).show();
         } else {
