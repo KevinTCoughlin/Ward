@@ -47,8 +47,12 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new MatchSummariesAdapter(this, mMatchSummaries);
-        //mAdapter.setHasStableIds(true);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setOnScrollListener(new InfiniteRecyclerOnScrollListener(mLayoutManager) {
+            @Override public void onLoadMore(final int currentPage) {
+
+            }
+        });
 
         final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra("summoner"));
         RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), this);
