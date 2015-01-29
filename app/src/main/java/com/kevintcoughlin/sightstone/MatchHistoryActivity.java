@@ -34,7 +34,7 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
     private LinearLayoutManager mLayoutManager;
     private MatchSummariesAdapter mAdapter;
     private ArrayList<MatchSummary> mMatchSummaries = new ArrayList<>();
-    private final Context mContext = this.getApplicationContext();
+    private Context mContext;
     private final String region = "na"; // @TODO: make configurable
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +43,7 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
         ButterKnife.inject(this);
         setSupportActionBar(mToolbar);
 
+        mContext = this.getApplicationContext();
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
