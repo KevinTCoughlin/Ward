@@ -1,5 +1,6 @@
 package com.kevintcoughlin.sightstone;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,7 +10,7 @@ import android.widget.Toast;
 
 import com.kevintcoughlin.sightstone.adapters.MatchSummariesAdapter;
 import com.kevintcoughlin.sightstone.http.RiotGamesClient;
-import com.kevintcoughlin.sightstone.models.Champion;
+import com.kevintcoughlin.sightstone.http.RiotGamesService;
 import com.kevintcoughlin.sightstone.models.MatchSummary;
 import com.kevintcoughlin.sightstone.models.Summoner;
 
@@ -17,7 +18,6 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,15 +34,15 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
     private LinearLayoutManager mLayoutManager;
     private MatchSummariesAdapter mAdapter;
     private ArrayList<MatchSummary> mMatchSummaries = new ArrayList<>();
-    private HashMap<String, Champion> mChampions;
+    private final Context mContext = this.getApplicationContext();
     private final String region = "na"; // @TODO: make configurable
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_history);
         ButterKnife.inject(this);
-
         setSupportActionBar(mToolbar);
+
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -50,11 +50,11 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setOnScrollListener(new InfiniteRecyclerOnScrollListener(mLayoutManager) {
             @Override public void onLoadMore(final int currentPage) {
-                final int beginIndex = currentPage * 15;
+                final int index = currentPage * RiotGamesService.MATCH_HISTORY_LIMIT - 1;
                 final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra("summoner"));
-                RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), beginIndex, new Callback<Map<String, List<MatchSummary>>>() {
-                    @Override
-                    public void success(Map<String, List<MatchSummary>> matches, Response response) {
+
+                RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), index, new Callback<Map<String, List<MatchSummary>>>() {
+                    @Override public void success(Map<String, List<MatchSummary>> matches, Response response) {
                         ArrayList<MatchSummary> matchHistory = (ArrayList<MatchSummary>) matches.get("matches");
                         // @TODO: Sort by created timestamp?
                         Collections.reverse(matchHistory);
@@ -62,9 +62,8 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
                         mAdapter.notifyDataSetChanged();
                     }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-
+                    @Override public void failure(RetrofitError error) {
+                        Toast.makeText(mContext, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

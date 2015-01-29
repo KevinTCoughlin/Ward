@@ -13,6 +13,8 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 
 public interface RiotGamesService {
+    public static final int MATCH_HISTORY_LIMIT = 15;
+
     @GET("/api/lol/{region}/v1.4/summoner/by-name/{summonerNames}")
     void listSummonersByNames(@Path("region") String region, @Path("summonerNames") String summonerNames, Callback<Map<String, Summoner>> callback);
 

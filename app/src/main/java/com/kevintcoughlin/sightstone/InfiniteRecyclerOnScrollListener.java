@@ -4,7 +4,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 public abstract class InfiniteRecyclerOnScrollListener extends RecyclerView.OnScrollListener {
-    private int currentPage = 1;
+    private int currentPage = 0;
     private int previousTotal = 0;
     private boolean loading = true;
 
