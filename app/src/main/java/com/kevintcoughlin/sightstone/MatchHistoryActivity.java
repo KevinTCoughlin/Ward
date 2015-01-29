@@ -56,7 +56,6 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
                 RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), index, new Callback<Map<String, List<MatchSummary>>>() {
                     @Override public void success(Map<String, List<MatchSummary>> matches, Response response) {
                         ArrayList<MatchSummary> matchHistory = (ArrayList<MatchSummary>) matches.get("matches");
-                        // @TODO: Sort by created timestamp?
                         Collections.reverse(matchHistory);
                         mMatchSummaries.addAll(matchHistory);
                         mAdapter.notifyDataSetChanged();
@@ -78,7 +77,6 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
         if (matchHistory == null || matchHistory.size() <= 0) {
             Toast.makeText(this, "No recent games found.", Toast.LENGTH_SHORT).show();
         } else {
-            // @TODO: Sort by created timestamp?
             Collections.reverse(matchHistory);
             mMatchSummaries.addAll(matchHistory);
             mAdapter.notifyDataSetChanged();
