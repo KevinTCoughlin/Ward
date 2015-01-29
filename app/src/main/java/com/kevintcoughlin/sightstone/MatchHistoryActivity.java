@@ -56,10 +56,14 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
 
                 RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), index, new Callback<Map<String, List<MatchSummary>>>() {
                     @Override public void success(Map<String, List<MatchSummary>> matches, Response response) {
-                        ArrayList<MatchSummary> matchHistory = (ArrayList<MatchSummary>) matches.get("matches");
-                        Collections.reverse(matchHistory);
-                        mMatchSummaries.addAll(matchHistory);
-                        mAdapter.notifyDataSetChanged();
+                        final ArrayList<MatchSummary> matchHistory = (ArrayList<MatchSummary>) matches.get("matches");
+                        if (matchHistory == null || matchHistory.size() <= 0) {
+                            Toast.makeText(mContext, "No more recent games found.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Collections.reverse(matchHistory);
+                            mMatchSummaries.addAll(matchHistory);
+                            mAdapter.notifyDataSetChanged();
+                        }
                     }
 
                     @Override public void failure(RetrofitError error) {
