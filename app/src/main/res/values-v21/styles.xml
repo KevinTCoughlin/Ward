@@ -2,10 +2,10 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">false</item>
-        <item name="colorPrimary">@color/pink_500</item>
-        <item name="colorPrimaryDark">@color/pink_600</item>
-        <item name="colorAccent">@color/pink_400</item>
-        <item name="android:statusBarColor">@color/pink_700</item>"
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_600</item>
+        <item name="colorAccent">@color/purple_400</item>
+        <item name="android:statusBarColor">@color/purple_700</item>"
         <item name="android:elevation">2dp</item>
     </style>
 

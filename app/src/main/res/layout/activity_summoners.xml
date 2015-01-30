@@ -23,8 +23,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@drawable/ic_add_white_24dp"
-        fab:fab_colorNormal="@color/pink_500"
-        fab:fab_colorPressed="@color/pink_600"
-        fab:fab_colorRipple="@color/pink_400"/>
-
+        fab:fab_colorNormal="@color/purple_500"
+        fab:fab_colorPressed="@color/purple_600"
+        fab:fab_colorRipple="@color/purple_400"/>
 </FrameLayout>
