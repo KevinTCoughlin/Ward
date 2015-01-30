@@ -70,7 +70,6 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new SummonersAdapter(this, getFollowedSummoners());
         mAdapter.setHasStableIds(true);
-        mFab.attachToRecyclerView(mRecyclerView);
         mFab.setOnClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
