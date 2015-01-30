@@ -13,6 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -46,7 +49,6 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
 
     private final String region = "na"; // @TODO: make configurable
     private final CupboardSQLiteOpenHelper db = new CupboardSQLiteOpenHelper(this);
-    private LinearLayoutManager mLayoutManager;
     private SummonersAdapter mAdapter;
     private GestureDetectorCompat mDetector;
     private Context mContext;
@@ -64,15 +66,33 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
 
         mContext = this;
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new SummonersAdapter(this, getFollowedSummoners());
         mAdapter.setHasStableIds(true);
-        mFab.attachToRecyclerView(mRecyclerView);
         mFab.setOnClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
         mRecyclerView.addOnItemTouchListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_summoners, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                final Intent intent = new Intent(mContext, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override public void success(Map<String, Summoner> stringSummonerMap, Response response) {

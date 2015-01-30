@@ -1,0 +1,11 @@
+<resources>
+
+    <string-array name="region_keys">
+        <item>"North America"</item>
+    </string-array>
+
+    <string-array name="region_values">
+        <item>"na"</item>
+    </string-array>
+
+</resources>

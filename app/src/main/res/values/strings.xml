@@ -11,4 +11,8 @@
     <string name="no_more_recent_games">No more recent games found.</string>
     <string name="no_recent_games">No recent games found.</string>
     <string name="add_summoner_placeholder">Type a Summoner\'s name</string>
+    <string name="region_list_pref_title">Default Region</string>
+    <string name="region_list_pref_summary">Select your default region.</string>
+    <string name="default_region_list_pref_dialog_title">Select your default region</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>
