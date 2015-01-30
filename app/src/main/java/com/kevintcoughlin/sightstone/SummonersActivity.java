@@ -105,16 +105,16 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         final LayoutInflater inflater = getLayoutInflater();
         final View v = inflater.inflate(R.layout.add_summoner_dialog, null);
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Follow");
+        builder.setTitle(getString(R.string.follow));
         builder.setView(v);
-        builder.setPositiveButton("Follow", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.follow), new DialogInterface.OnClickListener() {
             @Override public void onClick(DialogInterface dialog, int which) {
                 final EditText input = (EditText) v.findViewById(R.id.summoner_name);
                 final String name = input.getText().toString();
                 addSummoner(name);
             }
         });
-        builder.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.nevermind), new DialogInterface.OnClickListener() {
             @Override public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
@@ -124,14 +124,15 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
 
     private void promptDeleteSummoner(final Summoner summoner) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Unfollow");
-        builder.setMessage("Are you sure that you want to unfollow " + summoner.getName());
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override public void onClick(DialogInterface dialog, int which) {
+        builder.setTitle(getString(R.string.unfollow));
+        builder.setMessage(String.format(getString(R.string.confirm_unfollow_summoner), summoner.getName()));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
                 removeSummoner(summoner.getId());
             }
         });
-        builder.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.nevermind), new DialogInterface.OnClickListener() {
             @Override public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
@@ -163,7 +164,7 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
             final int position = mRecyclerView.getChildPosition(view);
             final Intent intent = new Intent(mContext, MatchHistoryActivity.class);
             final Bundle bundle = new Bundle();
-            bundle.putParcelable("summoner", Parcels.wrap(cupboard().withDatabase(db.getReadableDatabase()).get(Summoner.class, mAdapter.getItemId(position))));
+            bundle.putParcelable(Summoner.TAG, Parcels.wrap(cupboard().withDatabase(db.getReadableDatabase()).get(Summoner.class, mAdapter.getItemId(position))));
             intent.putExtras(bundle);
             startActivity(intent);
             return super.onSingleTapConfirmed(e);

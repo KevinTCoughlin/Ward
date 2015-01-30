@@ -18,7 +18,7 @@ import retrofit.client.Response;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public class SightstoneApplication extends Application {
+public class WardApplication extends Application {
     private final CupboardSQLiteOpenHelper db = new CupboardSQLiteOpenHelper(this);
     private final String region = "na";
 

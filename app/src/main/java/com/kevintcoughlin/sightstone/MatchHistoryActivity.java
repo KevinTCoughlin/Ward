@@ -36,6 +36,7 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
     private ArrayList<MatchSummary> mMatchSummaries = new ArrayList<>();
     private Context mContext;
     private final String region = "na"; // @TODO: make configurable
+    private final String MATCHES_KEY = "matches"; // @TODO: Move into API service
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,13 +53,13 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
         mRecyclerView.setOnScrollListener(new InfiniteRecyclerOnScrollListener(mLayoutManager) {
             @Override public void onLoadMore(final int currentPage) {
                 final int index = currentPage * RiotGamesService.MATCH_HISTORY_LIMIT - 1;
-                final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra("summoner"));
+                final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra(Summoner.TAG));
 
                 RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), index, new Callback<Map<String, List<MatchSummary>>>() {
                     @Override public void success(Map<String, List<MatchSummary>> matches, Response response) {
-                        final ArrayList<MatchSummary> matchHistory = (ArrayList<MatchSummary>) matches.get("matches");
+                        final List<MatchSummary> matchHistory =  matches.get(MATCHES_KEY);
                         if (matchHistory == null || matchHistory.size() <= 0) {
-                            Toast.makeText(mContext, "No more recent games found.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, getString(R.string.no_more_recent_games), Toast.LENGTH_SHORT).show();
                         } else {
                             Collections.reverse(matchHistory);
                             mMatchSummaries.addAll(matchHistory);
@@ -73,14 +74,14 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
             }
         });
 
-        final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra("summoner"));
+        final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra(Summoner.TAG));
         RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), this);
     }
 
     @Override public void success(Map<String, List<MatchSummary>> matches, Response response) {
-        final ArrayList<MatchSummary> matchHistory = (ArrayList<MatchSummary>) matches.get("matches");
+        final List<MatchSummary> matchHistory = matches.get(MATCHES_KEY);
         if (matchHistory == null || matchHistory.size() <= 0) {
-            Toast.makeText(this, "No recent games found.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_recent_games), Toast.LENGTH_SHORT).show();
         } else {
             Collections.reverse(matchHistory);
             mMatchSummaries.addAll(matchHistory);

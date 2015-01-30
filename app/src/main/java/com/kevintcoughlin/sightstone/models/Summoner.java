@@ -10,6 +10,8 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 @Parcel
 public final class Summoner {
+    public final static String TAG = "summoner";
+
     @SerializedName("id")
     private long _id;
     private String name;

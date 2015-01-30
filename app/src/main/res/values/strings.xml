@@ -1,6 +1,14 @@
 <resources>
-    <string name="app_name">Sightstone</string>
+    <string name="app_name">Ward</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="champion_artwork">Champion Artwork</string>
+    <string name="follow">Follow</string>
+    <string name="nevermind">Nevermind</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="yes">Yes</string>
+    <string name="confirm_unfollow_summoner">Are you sure that you want to unfollow %s</string>
+    <string name="no_more_recent_games">No more recent games found.</string>
+    <string name="no_recent_games">No recent games found.</string>
+    <string name="add_summoner_placeholder">Type a Summoner\'s name</string>
 </resources>
