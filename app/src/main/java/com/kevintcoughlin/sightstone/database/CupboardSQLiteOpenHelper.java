@@ -10,7 +10,7 @@ import com.kevintcoughlin.sightstone.models.Summoner;
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public final class CupboardSQLiteOpenHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "sightstone.db";
+    private static final String DATABASE_NAME = "ward.db";
     private static final int DATABASE_VERSION = 1;
 
     static {

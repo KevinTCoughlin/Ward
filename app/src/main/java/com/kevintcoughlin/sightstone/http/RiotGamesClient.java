@@ -4,9 +4,8 @@ import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 
 public class RiotGamesClient {
-    private static RiotGamesService sRiotGamesService;
-    private static final String baseUrl = "https://na.api.pvp.net";
     private static final String apiKey = "70328b7e-c373-44b9-9336-6832cda44559";
+    private static RiotGamesEndpoint mEndpoint = new RiotGamesEndpoint();
 
     private static RequestInterceptor requestInterceptor = new RequestInterceptor() {
         @Override
@@ -16,15 +15,22 @@ public class RiotGamesClient {
     };
 
     public static RiotGamesService getClient() {
-        if (sRiotGamesService == null) {
-            RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint(baseUrl)
-                    .setRequestInterceptor(requestInterceptor)
-                    .build();
+        mEndpoint.setRegion("na");
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(mEndpoint)
+                .setRequestInterceptor(requestInterceptor)
+                .build();
 
-            sRiotGamesService = restAdapter.create(RiotGamesService.class);
-        }
+        return restAdapter.create(RiotGamesService.class);
+    }
 
-        return sRiotGamesService;
+    public static RiotGamesService getClient(String region) {
+        mEndpoint.setRegion(region);
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(mEndpoint)
+                .setRequestInterceptor(requestInterceptor)
+                .build();
+
+        return restAdapter.create(RiotGamesService.class);
     }
 }

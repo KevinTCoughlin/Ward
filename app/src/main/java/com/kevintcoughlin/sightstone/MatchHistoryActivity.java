@@ -34,10 +34,8 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
     @InjectView(R.id.list) RecyclerView mRecyclerView;
 
     private final String TAG = "Match History";
-    private final String region = "na"; // @TODO: make configurable
     private final String MATCHES_KEY = "matches"; // @TODO: Move into API service
     private final String ACTION_PAGINATION = "Pagination";
-    private LinearLayoutManager mLayoutManager;
     private MatchSummariesAdapter mAdapter;
     private ArrayList<MatchSummary> mMatchSummaries = new ArrayList<>();
     private Context mContext;
@@ -51,7 +49,7 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
 
         mContext = this.getApplicationContext();
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new MatchSummariesAdapter(this, mMatchSummaries);
         mRecyclerView.setAdapter(mAdapter);
@@ -60,7 +58,7 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
                 final int index = currentPage * RiotGamesService.MATCH_HISTORY_LIMIT - 1;
                 final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra(Summoner.TAG));
 
-                RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), index, new Callback<Map<String, List<MatchSummary>>>() {
+                RiotGamesClient.getClient(summoner.getRegion()).listMatchesById(summoner.getRegion(), summoner.getId(), index, new Callback<Map<String, List<MatchSummary>>>() {
                     @Override public void success(Map<String, List<MatchSummary>> matches, Response response) {
                         final List<MatchSummary> matchHistory =  matches.get(MATCHES_KEY);
                         if (matchHistory == null || matchHistory.size() <= 0) {
@@ -87,7 +85,7 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
         });
 
         final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra(Summoner.TAG));
-        RiotGamesClient.getClient().listMatchesById(region, summoner.getId(), this);
+        RiotGamesClient.getClient(summoner.getRegion()).listMatchesById(summoner.getRegion(), summoner.getId(), this);
 
         mTracker = ((WardApplication) getApplication()).getTracker();
         mTracker.setScreenName(TAG);

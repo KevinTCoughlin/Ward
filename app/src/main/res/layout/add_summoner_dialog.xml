@@ -12,4 +12,9 @@
         android:inputType="textNoSuggestions"
         android:hint="@string/add_summoner_placeholder"/>
 
+    <Spinner
+        android:id="@+id/regions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

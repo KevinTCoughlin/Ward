@@ -18,6 +18,7 @@ public final class Summoner {
     private int profileIconId;
     private long revisionDate;
     private long summonerLevel;
+    private String region;
 
     public Summoner() {
 
@@ -65,5 +66,13 @@ public final class Summoner {
 
     public static Summoner fromCursor(Cursor cursor) {
         return cupboard().withCursor(cursor).get(Summoner.class);
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }

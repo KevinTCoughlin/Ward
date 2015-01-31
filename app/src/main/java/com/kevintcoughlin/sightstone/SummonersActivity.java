@@ -18,7 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -44,7 +46,7 @@ import retrofit.client.Response;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public final class SummonersActivity extends ActionBarActivity implements RecyclerView.OnItemTouchListener, Callback<Map<String, Summoner>>, FloatingActionButton.OnClickListener {
+public final class SummonersActivity extends ActionBarActivity implements RecyclerView.OnItemTouchListener, FloatingActionButton.OnClickListener {
     @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
     @InjectView(R.id.list) RecyclerView mRecyclerView;
     @InjectView(R.id.fab) FloatingActionButton mFab;
@@ -54,7 +56,6 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
     private final String ACTION_REMOVE = "Remove";
     private final String ACTION_SEARCH = "Search";
     private final String ACTION_MATCH_HISTORY = "Match History";
-    private final String region = "na"; // @TODO: make configurable
     private final CupboardSQLiteOpenHelper db = new CupboardSQLiteOpenHelper(this);
     private SummonersAdapter mAdapter;
     private GestureDetectorCompat mDetector;
@@ -105,30 +106,6 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         }
     }
 
-    @Override public void success(Map<String, Summoner> stringSummonerMap, Response response) {
-        final DatabaseCompartment dbc = cupboard().withDatabase(db.getWritableDatabase());
-        final Iterator it = stringSummonerMap.entrySet().iterator();
-
-        while (it.hasNext()) {
-            final Map.Entry pairs = (Map.Entry) it.next();
-            final Summoner summoner = (Summoner) pairs.getValue();
-            dbc.put(summoner);
-            it.remove();
-
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory(TAG)
-                    .setAction(ACTION_ADD)
-                    .setLabel(summoner.getName())
-                    .build());
-        }
-
-        mAdapter.swapCursor(dbc.query(Summoner.class).getCursor());
-    }
-
-    @Override public void failure(RetrofitError error) {
-        Toast.makeText(this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    }
-
     @Override public void onClick(View v) {
         promptAddSummoner();
     }
@@ -141,13 +118,21 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         final LayoutInflater inflater = getLayoutInflater();
         final View v = inflater.inflate(R.layout.add_summoner_dialog, null);
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        final Spinner spinner = (Spinner) v.findViewById(R.id.regions);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.region_keys, android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
         builder.setTitle(getString(R.string.follow));
         builder.setView(v);
         builder.setPositiveButton(getString(R.string.follow), new DialogInterface.OnClickListener() {
             @Override public void onClick(DialogInterface dialog, int which) {
                 final EditText input = (EditText) v.findViewById(R.id.summoner_name);
                 final String name = input.getText().toString();
-                addSummoner(name);
+                final int spinnerPosition = spinner.getSelectedItemPosition();
+                final String region = getResources().getStringArray(R.array.region_values)[spinnerPosition];
+                addSummoner(name, region);
 
                 mTracker.send(new HitBuilders.EventBuilder()
                         .setCategory(TAG)
@@ -188,8 +173,33 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         builder.show();
     }
 
-    private void addSummoner(String name) {
-        RiotGamesClient.getClient().listSummonersByNames(region, name, this);
+    private void addSummoner(String name, final String region) {
+        RiotGamesClient.getClient(region).listSummonersByNames(region, name, new Callback<Map<String, Summoner>>() {
+            @Override public void success(Map<String, Summoner> stringSummonerMap, Response response) {
+                final DatabaseCompartment dbc = cupboard().withDatabase(db.getWritableDatabase());
+                final Iterator it = stringSummonerMap.entrySet().iterator();
+
+                while (it.hasNext()) {
+                    final Map.Entry pairs = (Map.Entry) it.next();
+                    final Summoner summoner = (Summoner) pairs.getValue();
+                    summoner.setRegion(region);
+                    dbc.put(summoner);
+                    it.remove();
+
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory(TAG)
+                            .setAction(ACTION_ADD)
+                            .setLabel(summoner.getName())
+                            .build());
+                }
+
+                mAdapter.swapCursor(dbc.query(Summoner.class).getCursor());
+            }
+
+            @Override public void failure(RetrofitError error) {
+                Toast.makeText(mContext, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void removeSummoner(long id) {
@@ -210,19 +220,21 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         @Override public boolean onSingleTapConfirmed(MotionEvent e) {
             final View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
             final int position = mRecyclerView.getChildPosition(view);
-            final Intent intent = new Intent(mContext, MatchHistoryActivity.class);
-            final Bundle bundle = new Bundle();
-            final Summoner summoner = cupboard().withDatabase(db.getReadableDatabase()).get(Summoner.class, mAdapter.getItemId(position));
-            bundle.putParcelable(Summoner.TAG, Parcels.wrap(summoner));
-            intent.putExtras(bundle);
+            if (position > -1) {
+                final Intent intent = new Intent(mContext, MatchHistoryActivity.class);
+                final Bundle bundle = new Bundle();
+                final Summoner summoner = cupboard().withDatabase(db.getReadableDatabase()).get(Summoner.class, mAdapter.getItemId(position));
+                bundle.putParcelable(Summoner.TAG, Parcels.wrap(summoner));
+                intent.putExtras(bundle);
 
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory(TAG)
-                    .setAction(ACTION_MATCH_HISTORY)
-                    .setLabel(summoner.getName())
-                    .build());
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory(TAG)
+                        .setAction(ACTION_MATCH_HISTORY)
+                        .setLabel(summoner.getName())
+                        .build());
 
-            startActivity(intent);
+                startActivity(intent);
+            }
             return super.onSingleTapConfirmed(e);
         }
 
