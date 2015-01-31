@@ -10,6 +10,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.kevintcoughlin.sightstone.R;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class AdFragment extends Fragment {
@@ -30,7 +31,9 @@ public class AdFragment extends Fragment {
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_ad, container, false);
+        final View view = inflater.inflate(R.layout.fragment_ad, container, false);
+        ButterKnife.inject(this, view);
+        return view;
     }
 
     @Override public void onPause() {
