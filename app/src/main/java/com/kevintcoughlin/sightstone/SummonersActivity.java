@@ -76,15 +76,13 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         mRecyclerView.addOnItemTouchListener(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_summoners, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 final Intent intent = new Intent(mContext, SettingsActivity.class);

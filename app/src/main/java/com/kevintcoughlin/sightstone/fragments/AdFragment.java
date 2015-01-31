@@ -10,8 +10,10 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.kevintcoughlin.sightstone.R;
 
+import butterknife.InjectView;
+
 public class AdFragment extends Fragment {
-    private AdView mAdView;
+    @InjectView(R.id.adView) AdView mAdView;
 
     public AdFragment() {
     }
@@ -24,7 +26,6 @@ public class AdFragment extends Fragment {
                 .addTestDevice("C6D397172C2598AF256CF30C6393FBFC")
                 .build();
 
-        mAdView = (AdView) getView().findViewById(R.id.adView);
         mAdView.loadAd(adRequest);
     }
 
