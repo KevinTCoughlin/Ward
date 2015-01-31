@@ -2,6 +2,8 @@ package com.kevintcoughlin.sightstone;
 
 import android.app.Application;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.kevintcoughlin.sightstone.database.CupboardSQLiteOpenHelper;
 import com.kevintcoughlin.sightstone.http.RiotGamesClient;
 import com.kevintcoughlin.sightstone.models.Champion;
@@ -43,5 +45,11 @@ public class WardApplication extends Application {
 
             }
         });
+    }
+
+    synchronized Tracker getTracker() {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        Tracker tracker = analytics.newTracker(R.xml.global_tracker);
+        return tracker;
     }
 }

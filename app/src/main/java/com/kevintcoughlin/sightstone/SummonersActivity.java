@@ -22,6 +22,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.kevintcoughlin.sightstone.adapters.SummonersAdapter;
 import com.kevintcoughlin.sightstone.database.CupboardSQLiteOpenHelper;
 import com.kevintcoughlin.sightstone.http.RiotGamesClient;
@@ -47,11 +49,17 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
     @InjectView(R.id.list) RecyclerView mRecyclerView;
     @InjectView(R.id.fab) FloatingActionButton mFab;
 
+    private final String TAG = "Summoners";
+    private final String ACTION_ADD = "Add";
+    private final String ACTION_REMOVE = "Remove";
+    private final String ACTION_SEARCH = "Search";
+    private final String ACTION_MATCH_HISTORY = "Match History";
     private final String region = "na"; // @TODO: make configurable
     private final CupboardSQLiteOpenHelper db = new CupboardSQLiteOpenHelper(this);
     private SummonersAdapter mAdapter;
     private GestureDetectorCompat mDetector;
     private Context mContext;
+    private Tracker mTracker;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +74,7 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
 
         mContext = this;
         mRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new SummonersAdapter(this, getFollowedSummoners());
         mAdapter.setHasStableIds(true);
@@ -74,17 +82,19 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         mRecyclerView.setAdapter(mAdapter);
         mDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
         mRecyclerView.addOnItemTouchListener(this);
+
+        mTracker = ((WardApplication) getApplication()).getTracker();
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.AppViewBuilder().build());
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_summoners, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 final Intent intent = new Intent(mContext, SettingsActivity.class);
@@ -104,6 +114,12 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
             final Summoner summoner = (Summoner) pairs.getValue();
             dbc.put(summoner);
             it.remove();
+
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory(TAG)
+                    .setAction(ACTION_ADD)
+                    .setLabel(summoner.getName())
+                    .build());
         }
 
         mAdapter.swapCursor(dbc.query(Summoner.class).getCursor());
@@ -132,6 +148,12 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
                 final EditText input = (EditText) v.findViewById(R.id.summoner_name);
                 final String name = input.getText().toString();
                 addSummoner(name);
+
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory(TAG)
+                        .setAction(ACTION_SEARCH)
+                        .setLabel(name)
+                        .build());
             }
         });
         builder.setNegativeButton(getString(R.string.nevermind), new DialogInterface.OnClickListener() {
@@ -150,6 +172,12 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeSummoner(summoner.getId());
+
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory(TAG)
+                        .setAction(ACTION_REMOVE)
+                        .setLabel(summoner.getName())
+                        .build());
             }
         });
         builder.setNegativeButton(getString(R.string.nevermind), new DialogInterface.OnClickListener() {
@@ -184,8 +212,16 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
             final int position = mRecyclerView.getChildPosition(view);
             final Intent intent = new Intent(mContext, MatchHistoryActivity.class);
             final Bundle bundle = new Bundle();
-            bundle.putParcelable(Summoner.TAG, Parcels.wrap(cupboard().withDatabase(db.getReadableDatabase()).get(Summoner.class, mAdapter.getItemId(position))));
+            final Summoner summoner = cupboard().withDatabase(db.getReadableDatabase()).get(Summoner.class, mAdapter.getItemId(position));
+            bundle.putParcelable(Summoner.TAG, Parcels.wrap(summoner));
             intent.putExtras(bundle);
+
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory(TAG)
+                    .setAction(ACTION_MATCH_HISTORY)
+                    .setLabel(summoner.getName())
+                    .build());
+
             startActivity(intent);
             return super.onSingleTapConfirmed(e);
         }
