@@ -1,6 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
+        android:key="region"
         android:title="@string/region_list_pref_title"
         android:summary="@string/region_list_pref_summary"
         android:entries="@array/region_keys"

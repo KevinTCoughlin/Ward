@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +36,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 import org.parceler.Parcels;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -118,11 +121,15 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         final LayoutInflater inflater = getLayoutInflater();
         final View v = inflater.inflate(R.layout.add_summoner_dialog, null);
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final String[] regionValues = getResources().getStringArray(R.array.region_values);
+        final int position = Arrays.asList(regionValues).indexOf(prefs.getString("region", "na"));
         final Spinner spinner = (Spinner) v.findViewById(R.id.regions);
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.region_keys, android.R.layout.simple_spinner_dropdown_item);
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(position);
 
         builder.setTitle(getString(R.string.follow));
         builder.setView(v);
@@ -131,7 +138,7 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
                 final EditText input = (EditText) v.findViewById(R.id.summoner_name);
                 final String name = input.getText().toString();
                 final int spinnerPosition = spinner.getSelectedItemPosition();
-                final String region = getResources().getStringArray(R.array.region_values)[spinnerPosition];
+                final String region = regionValues[spinnerPosition];
                 addSummoner(name, region);
 
                 mTracker.send(new HitBuilders.EventBuilder()
