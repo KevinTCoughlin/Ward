@@ -15,4 +15,14 @@
     <string name="region_list_pref_summary">Select your default region.</string>
     <string name="default_region_list_pref_dialog_title">Select your default region</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="north_america">"North America"</string>
+    <string name="brazil">"Brazil"</string>
+    <string name="european_union_northeast">"EU Northeast"</string>
+    <string name="european_union_west">"EU West"</string>
+    <string name="korea">"Korea"</string>
+    <string name="latin_america_south">"Latin America South"</string>
+    <string name="latin_america_north">"Latin America North"</string>
+    <string name="oceanic">"Oceanic"</string>
+    <string name="turkey">"Turkey"</string>
+    <string name="russia">"Russia"</string>
 </resources>
