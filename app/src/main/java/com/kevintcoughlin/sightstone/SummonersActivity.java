@@ -86,7 +86,6 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         mRecyclerView.setAdapter(mAdapter);
         mDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
         mRecyclerView.addOnItemTouchListener(this);
-
         mTracker = ((WardApplication) getApplication()).getTracker();
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.AppViewBuilder().build());
