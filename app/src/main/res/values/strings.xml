@@ -30,4 +30,5 @@
     <string name="summoners">Summoners</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="news_item_image_content_description">News feed item image</string>
 </resources>

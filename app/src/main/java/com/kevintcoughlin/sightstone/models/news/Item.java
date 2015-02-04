@@ -10,6 +10,7 @@ public final class Item {
     @Element(name = "title") private String title;
     @Element(name = "description") private String description;
     @Element(name = "link") private String link;
+    public String imageUrl;
 
     public Guid getGuid ()
     {

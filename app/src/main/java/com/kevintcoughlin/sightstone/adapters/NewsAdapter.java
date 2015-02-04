@@ -1,26 +1,30 @@
 package com.kevintcoughlin.sightstone.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kevintcoughlin.sightstone.R;
 import com.kevintcoughlin.sightstone.models.news.Item;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private ArrayList<Item> mDataSet;
+    private Context mContext;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.title) TextView mTextView;
+        @InjectView(R.id.title) TextView mTitleTextView;
+        @InjectView(R.id.description) TextView mDescriptionTextView;
+        @InjectView(R.id.image) ImageView mImageView;
 
         public ViewHolder(View v) {
             super(v);
@@ -28,7 +32,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         }
     }
 
-    public NewsAdapter(ArrayList<Item> items) {
+    public NewsAdapter(Context context, ArrayList<Item> items) {
+        mContext = context;
         mDataSet = items;
     }
 
@@ -39,14 +44,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     @Override public void onBindViewHolder(ViewHolder holder, int position) {
         final Item item = mDataSet.get(position);
-        final Pattern p = Pattern.compile("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>");
-        final Matcher m = p.matcher(item.getDescription());
-        String imageSrc = "";
-        if (m.find()) {
-            imageSrc = m.group(0);
-        }
-
-        holder.mTextView.setText(item.getTitle());
+        holder.mTitleTextView.setText(item.getTitle());
+        holder.mDescriptionTextView.setText(item.getDescription());
+        // @TODO: large -> medium (small if available in image url)
+        Picasso.with(mContext)
+                .load("http://na.leagueoflegends.com/en" + item.imageUrl)
+                .fit()
+                .centerCrop()
+                .into(holder.mImageView);
     }
 
     @Override public int getItemCount() {
