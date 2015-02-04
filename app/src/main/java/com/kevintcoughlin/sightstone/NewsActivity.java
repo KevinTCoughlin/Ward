@@ -1,11 +1,17 @@
 package com.kevintcoughlin.sightstone;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import com.kevintcoughlin.sightstone.adapters.NewsAdapter;
@@ -24,11 +30,12 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class NewsActivity extends ActionBarActivity implements Callback<Rss> {
+public class NewsActivity extends ActionBarActivity implements RecyclerView.OnItemTouchListener, Callback<Rss> {
     @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
     @InjectView(R.id.list) RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Item> mNewsDataSet = new ArrayList<>();
+    private GestureDetectorCompat mDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,8 @@ public class NewsActivity extends ActionBarActivity implements Callback<Rss> {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new NewsAdapter(this, mNewsDataSet);
         mRecyclerView.setAdapter(mAdapter);
+        mDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
+        mRecyclerView.addOnItemTouchListener(this);
 
         LeagueOfLegendsNewsClient.getClient().getFeed(this);
     }
@@ -77,5 +86,23 @@ public class NewsActivity extends ActionBarActivity implements Callback<Rss> {
     @Override
     public void failure(RetrofitError error) {
         Toast.makeText(this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        mDetector.onTouchEvent(e);
+        return false;
+    }
+
+    @Override public void onTouchEvent(RecyclerView rv, MotionEvent e) {}
+
+    private class RecyclerViewOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override public boolean onSingleTapConfirmed(MotionEvent e) {
+            final View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+            final int position = mRecyclerView.getChildPosition(view);
+            if (position > -1) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mNewsDataSet.get(position).getLink())));
+            }
+            return super.onSingleTapConfirmed(e);
+        }
     }
 }
