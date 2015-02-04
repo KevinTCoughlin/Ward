@@ -3,7 +3,7 @@ package com.kevintcoughlin.sightstone.models.news;
 import org.simpleframework.xml.Root;
 
 @Root(name = "guid", strict = false)
-public class Guid {
+public final class Guid {
     private String content;
 
     private String isPermaLink;

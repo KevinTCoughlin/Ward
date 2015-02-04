@@ -4,7 +4,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root(name = "item", strict = false)
-public class Item {
+public final class Item {
     @Element(name = "guid", required = false) private Guid guid;
     @Element(name = "pubDate") private String pubDate;
     @Element(name = "title") private String title;

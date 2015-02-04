@@ -7,7 +7,7 @@ import org.simpleframework.xml.Root;
 import java.util.ArrayList;
 
 @Root(name = "channel", strict = false)
-public class Channel {
+public final class Channel {
     @Element(name = "title") private String title;
     @Element(name = "description", required = false) private String description;
     @Element(name = "link") private String link;

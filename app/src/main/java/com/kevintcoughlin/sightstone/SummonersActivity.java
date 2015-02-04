@@ -9,19 +9,20 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -53,6 +54,8 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
     @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
     @InjectView(R.id.list) RecyclerView mRecyclerView;
     @InjectView(R.id.fab) FloatingActionButton mFab;
+    @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+    @InjectView(R.id.left_drawer) ListView mDrawerList;
 
     private final String TAG = "Summoners";
     private final String ACTION_ADD = "Add";
@@ -60,6 +63,7 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
     private final String ACTION_SEARCH = "Search";
     private final String ACTION_MATCH_HISTORY = "Match History";
     private final CupboardSQLiteOpenHelper db = new CupboardSQLiteOpenHelper(this);
+    private String[] mNavigationMenuItems;
     private SummonersAdapter mAdapter;
     private GestureDetectorCompat mDetector;
     private Context mContext;
@@ -75,8 +79,16 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         setContentView(R.layout.activity_summoners);
         ButterKnife.inject(this);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         mContext = this;
+        mNavigationMenuItems = getResources().getStringArray(R.array.navigation_menu_items);
+        mDrawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mNavigationMenuItems));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        final ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
         mRecyclerView.setHasFixedSize(true);
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -86,26 +98,10 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
         mRecyclerView.setAdapter(mAdapter);
         mDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
         mRecyclerView.addOnItemTouchListener(this);
+
         mTracker = ((WardApplication) getApplication()).getTracker();
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.AppViewBuilder().build());
-    }
-
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
-        final MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_summoners, menu);
-        return true;
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                final Intent intent = new Intent(mContext, SettingsActivity.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override public void onClick(View v) {
@@ -251,5 +247,34 @@ public final class SummonersActivity extends ActionBarActivity implements Recycl
             promptDeleteSummoner(summoner);
             super.onLongPress(e);
         }
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
+    private void selectItem(int position) {
+        final String action = mNavigationMenuItems[position];
+        // @TODO: Convert to string id ints
+        switch (action) {
+            case "Settings":
+                startActivity(new Intent(mContext, SettingsActivity.class));
+                break;
+            case "Summoners":
+                startActivity(new Intent(mContext, SummonersActivity.class));
+                break;
+            case "News":
+                startActivity(new Intent(mContext, NewsActivity.class));
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override public void setTitle(CharSequence title) {
+       //getActionBar().setTitle(title);
     }
 }

@@ -25,4 +25,9 @@
     <string name="oceanic">"Oceanic"</string>
     <string name="turkey">"Turkey"</string>
     <string name="russia">"Russia"</string>
+    <string name="settings">Settings</string>
+    <string name="news">News</string>
+    <string name="summoners">Summoners</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 </resources>
