@@ -25,7 +25,7 @@ import nl.qbusict.cupboard.DatabaseCompartment;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public class MatchSummariesAdapter extends RecyclerView.Adapter<MatchSummariesAdapter.ViewHolder> {
+public final class MatchSummariesAdapter extends RecyclerView.Adapter<MatchSummariesAdapter.ViewHolder> {
     private final String VERSION = "5.1.1";
     private Context mContext;
     private ArrayList<MatchSummary> mMatchSummaries;

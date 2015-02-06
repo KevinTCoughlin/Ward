@@ -30,7 +30,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class NewsActivity extends ActionBarActivity implements RecyclerView.OnItemTouchListener, Callback<Rss> {
+public final class NewsActivity extends ActionBarActivity implements RecyclerView.OnItemTouchListener, Callback<Rss> {
     @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
     @InjectView(R.id.list) RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
