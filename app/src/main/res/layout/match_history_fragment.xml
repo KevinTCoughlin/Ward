@@ -6,10 +6,6 @@
     android:orientation="vertical"
     tools:context=".MatchHistoryActivity">
 
-    <include
-        android:id="@+id/toolbar_actionbar"
-        layout="@layout/toolbar_actionbar"/>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"

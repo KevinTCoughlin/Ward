@@ -6,7 +6,6 @@
     android:background="#FFF">
 
     <RelativeLayout
-        xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
@@ -14,34 +13,11 @@
             android:id="@+id/toolbar_actionbar"
             layout="@layout/toolbar_actionbar"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list"
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="56dp"
-            android:cacheColorHint="@android:color/transparent"
-            android:scrollbars="vertical"
-            android:layout_above="@+id/ad"/>
-
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_above="@+id/ad"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_add_white_24dp"
-            fab:fab_colorNormal="@color/purple_500"
-            fab:fab_colorPressed="@color/purple_600"
-            fab:fab_colorRipple="@color/purple_400"/>
-
-        <fragment
-            android:id="@+id/ad"
-            android:name="com.kevintcoughlin.sightstone.fragments.AdFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
+            android:layout_marginTop="56dp"/>
     </RelativeLayout>
 
     <ListView android:id="@+id/left_drawer"

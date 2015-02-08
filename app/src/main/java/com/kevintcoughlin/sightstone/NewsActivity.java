@@ -43,8 +43,8 @@ public final class NewsActivity extends ActionBarActivity implements RecyclerVie
         setContentView(R.layout.news_activity);
         ButterKnife.inject(this);
         setSupportActionBar(mToolbar);
-
         setTitle("News");
+
         final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);

@@ -2,10 +2,12 @@ package com.kevintcoughlin.sightstone;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -29,10 +31,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public final class MatchHistoryActivity extends ActionBarActivity implements Callback<Map<String, List<MatchSummary>>> {
-    @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
+public final class MatchHistoryFragment extends Fragment implements Callback<Map<String, List<MatchSummary>>> {
     @InjectView(R.id.list) RecyclerView mRecyclerView;
-
     private final String TAG = "Match History";
     private final String MATCHES_KEY = "matches"; // @TODO: Move into API service
     private final String ACTION_PAGINATION = "Pagination";
@@ -41,22 +41,20 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
     private Context mContext;
     private Tracker mTracker;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_match_history);
-        ButterKnife.inject(this);
-        setSupportActionBar(mToolbar);
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.match_history_fragment, container, false);
+        ButterKnife.inject(this, view);
 
-        mContext = this.getApplicationContext();
+        mContext = this.getActivity().getApplicationContext();
         mRecyclerView.setHasFixedSize(true);
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MatchSummariesAdapter(this, mMatchSummaries);
+        mAdapter = new MatchSummariesAdapter(mContext, mMatchSummaries);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setOnScrollListener(new InfiniteRecyclerOnScrollListener(mLayoutManager) {
             @Override public void onLoadMore(final int currentPage) {
                 final int index = currentPage * RiotGamesService.MATCH_HISTORY_LIMIT - 1;
-                final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra(Summoner.TAG));
+                final Summoner summoner = Parcels.unwrap(getArguments().getParcelable(Summoner.TAG));
 
                 RiotGamesClient.getClient(summoner.getRegion()).listMatchesById(summoner.getRegion(), summoner.getId(), index, new Callback<Map<String, List<MatchSummary>>>() {
                     @Override public void success(Map<String, List<MatchSummary>> matches, Response response) {
@@ -84,18 +82,26 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
             }
         });
 
-        final Summoner summoner = Parcels.unwrap(getIntent().getParcelableExtra(Summoner.TAG));
+        final Summoner summoner = Parcels.unwrap(getArguments().getParcelable(Summoner.TAG));
+        getActivity().setTitle(summoner.getName());
         RiotGamesClient.getClient(summoner.getRegion()).listMatchesById(summoner.getRegion(), summoner.getId(), this);
 
-        mTracker = ((WardApplication) getApplication()).getTracker();
+        return view;
+    }
+
+    @Override public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mTracker = ((WardApplication) getActivity().getApplication()).getTracker();
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.AppViewBuilder().build());
     }
 
+
     @Override public void success(Map<String, List<MatchSummary>> matches, Response response) {
         final List<MatchSummary> matchHistory = matches.get(MATCHES_KEY);
         if (matchHistory == null || matchHistory.size() <= 0) {
-            Toast.makeText(this, getString(R.string.no_recent_games), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, getString(R.string.no_recent_games), Toast.LENGTH_SHORT).show();
         } else {
             Collections.reverse(matchHistory);
             mMatchSummaries.addAll(matchHistory);
@@ -104,6 +110,6 @@ public final class MatchHistoryActivity extends ActionBarActivity implements Cal
     }
 
     @Override public void failure(RetrofitError error) {
-        Toast.makeText(this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
 }
