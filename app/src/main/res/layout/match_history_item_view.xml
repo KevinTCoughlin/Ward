@@ -4,7 +4,9 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:paddingTop="@dimen/margin"
+    android:paddingLeft="@dimen/margin"
+    android:paddingRight="@dimen/margin">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/champion_artwork"
@@ -16,7 +18,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="@dimen/margin"
         android:layout_toRightOf="@+id/champion_artwork"
         android:layout_toEndOf="@+id/champion_artwork"
         android:layout_centerVertical="true">

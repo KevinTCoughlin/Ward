@@ -89,7 +89,9 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case "Summoners":
-                startActivity(new Intent(this, SummonersActivity.class));
+                Intent intent = new Intent(this, SummonersActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
                 break;
             case "News":
                 startActivity(new Intent(this, NewsActivity.class));

@@ -14,7 +14,8 @@
             android:value="@integer/google_play_services_version" />
         <activity
             android:name=".activities.SummonersActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
