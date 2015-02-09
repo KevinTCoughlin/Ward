@@ -3,6 +3,7 @@ package com.kevintcoughlin.sightstone;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.GestureDetector;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ import retrofit.client.Response;
 public final class NewsActivity extends ActionBarActivity implements RecyclerView.OnItemTouchListener, Callback<Rss> {
     @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
     @InjectView(R.id.list) RecyclerView mRecyclerView;
+    private final String TAG = "News";
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Item> mNewsDataSet = new ArrayList<>();
     private GestureDetectorCompat mDetector;
@@ -43,7 +46,9 @@ public final class NewsActivity extends ActionBarActivity implements RecyclerVie
         setContentView(R.layout.news_activity);
         ButterKnife.inject(this);
         setSupportActionBar(mToolbar);
-        setTitle("News");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        setTitle(TAG);
 
         final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setHasFixedSize(true);
@@ -56,17 +61,24 @@ public final class NewsActivity extends ActionBarActivity implements RecyclerVie
         LeagueOfLegendsNewsClient.getClient().getFeed(this);
     }
 
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override public void success(Rss rss, Response response) {
         final List<Item> items = rss.getChannel().getItems();
         for (Item item : items) {
             // @TODO: Move this parsing
             final Pattern p = Pattern.compile("src=\"(.*?)\"");
             final Matcher m = p.matcher(item.getDescription());
-            String url = "";
             if (m.find()) {
                 item.imageUrl = m.group(1);
             }
-
             item.setDescription(stripHtml(item.getDescription()));
         }
 
@@ -83,6 +95,7 @@ public final class NewsActivity extends ActionBarActivity implements RecyclerVie
                 .replace((char) 65532, (char) 32)
                 .trim();
     }
+
     @Override
     public void failure(RetrofitError error) {
         Toast.makeText(this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
