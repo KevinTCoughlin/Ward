@@ -36,7 +36,7 @@ import retrofit.client.Response;
 
 public final class MatchHistoryFragment extends Fragment implements Callback<Map<String, List<MatchSummary>>> {
     @InjectView(R.id.list) RecyclerView mRecyclerView;
-    private final String TAG = "Match History";
+    public static final String TAG = "Match History";
     private final String MATCHES_KEY = "matches"; // @TODO: Move into API service
     private final String ACTION_PAGINATION = "Pagination";
     private MatchSummariesAdapter mAdapter;
@@ -45,7 +45,7 @@ public final class MatchHistoryFragment extends Fragment implements Callback<Map
     private Tracker mTracker;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.match_history_fragment, container, false);
+        final View view = inflater.inflate(R.layout.fragment_match_history, container, false);
         ButterKnife.inject(this, view);
 
         mContext = this.getActivity().getApplicationContext();

@@ -48,7 +48,7 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class FavoriteSummonersFragment extends Fragment implements RecyclerView.OnItemTouchListener, FloatingActionButton.OnClickListener {
     @InjectView(R.id.list) RecyclerView mRecyclerView;
     @InjectView(R.id.fab) FloatingActionButton mFab;
-    private final String TAG = "Summoners";
+    public static final String TAG = "Summoners";
     private final String ACTION_ADD = "Add";
     private final String ACTION_REMOVE = "Remove";
     private final String ACTION_SEARCH = "Search";
@@ -75,7 +75,7 @@ public class FavoriteSummonersFragment extends Fragment implements RecyclerView.
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final View view = inflater.inflate(R.layout.favorite_summoners_fragment, container, false);
+        final View view = inflater.inflate(R.layout.fragment_favorite_summoners, container, false);
         ButterKnife.inject(this, view);
 
         getActivity().setTitle(TAG);
@@ -112,7 +112,7 @@ public class FavoriteSummonersFragment extends Fragment implements RecyclerView.
 
     private void promptAddSummoner() {
         final LayoutInflater inflater = LayoutInflater.from(getActivity());
-        final View v = inflater.inflate(R.layout.add_summoner_dialog, null);
+        final View v = inflater.inflate(R.layout.dialog_add_summoner, null);
         final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         final String[] regionValues = getResources().getStringArray(R.array.region_values);

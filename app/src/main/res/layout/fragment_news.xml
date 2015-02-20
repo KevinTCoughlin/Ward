@@ -4,11 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context=".MatchHistoryActivity">
-
-    <include
-        android:id="@+id/toolbar_actionbar"
-        layout="@layout/toolbar_actionbar"/>
+    tools:context=".NewsFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"

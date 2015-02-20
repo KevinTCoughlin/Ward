@@ -53,7 +53,7 @@ public final class MatchSummariesAdapter extends RecyclerView.Adapter<MatchSumma
     }
 
     @Override public MatchSummariesAdapter.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.match_history_item_view, parent, false);
+        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.match_history_item, parent, false);
         return new ViewHolder(v);
     }
 

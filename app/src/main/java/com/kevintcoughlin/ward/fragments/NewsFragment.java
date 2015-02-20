@@ -1,19 +1,18 @@
-package com.kevintcoughlin.ward.activities;
+package com.kevintcoughlin.ward.fragments;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.GestureDetector;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.kevintcoughlin.ward.R;
@@ -33,42 +32,30 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public final class NewsActivity extends ActionBarActivity implements RecyclerView.OnItemTouchListener, Callback<Rss> {
-    @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
+public final class NewsFragment extends Fragment implements RecyclerView.OnItemTouchListener, Callback<Rss> {
     @InjectView(R.id.list) RecyclerView mRecyclerView;
-    private final String TAG = "News";
+    public static final String TAG = "News";
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Item> mNewsDataSet = new ArrayList<>();
     private GestureDetectorCompat mDetector;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.news_activity);
-        ButterKnife.inject(this);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        setTitle(TAG);
+        final View view = inflater.inflate(R.layout.fragment_news, container, false);
+        ButterKnife.inject(this, view);
 
-        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        getActivity().setTitle(TAG);
+        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new NewsAdapter(this, mNewsDataSet);
+        mAdapter = new NewsAdapter(getActivity(), mNewsDataSet);
         mRecyclerView.setAdapter(mAdapter);
-        mDetector = new GestureDetectorCompat(this, new RecyclerViewOnGestureListener());
+        mDetector = new GestureDetectorCompat(getActivity(), new RecyclerViewOnGestureListener());
         mRecyclerView.addOnItemTouchListener(this);
 
         LeagueOfLegendsNewsClient.getClient().getFeed(this);
-    }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return view;
     }
 
     @Override public void success(Rss rss, Response response) {
@@ -99,7 +86,7 @@ public final class NewsActivity extends ActionBarActivity implements RecyclerVie
 
     @Override
     public void failure(RetrofitError error) {
-        Toast.makeText(this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
@@ -120,3 +107,4 @@ public final class NewsActivity extends ActionBarActivity implements RecyclerVie
         }
     }
 }
+

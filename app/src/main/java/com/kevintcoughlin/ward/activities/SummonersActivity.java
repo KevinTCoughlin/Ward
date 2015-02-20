@@ -3,11 +3,11 @@ package com.kevintcoughlin.ward.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +19,7 @@ import com.kevintcoughlin.ward.BuildConfig;
 import com.kevintcoughlin.ward.R;
 import com.kevintcoughlin.ward.fragments.FavoriteSummonersFragment;
 import com.kevintcoughlin.ward.fragments.MatchHistoryFragment;
+import com.kevintcoughlin.ward.fragments.NewsFragment;
 import com.kevintcoughlin.ward.models.Summoner;
 
 import org.parceler.Parcels;
@@ -67,7 +68,7 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
             fragment.setArguments(getIntent().getExtras());
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.fragment_container, fragment)
+                    .replace(R.id.fragment_container, fragment, FavoriteSummonersFragment.TAG)
                     .commit();
         }
     }
@@ -89,27 +90,38 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case "Summoners":
-                Intent intent = new Intent(this, SummonersActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                FavoriteSummonersFragment summonersFragment = (FavoriteSummonersFragment) getSupportFragmentManager().findFragmentByTag(FavoriteSummonersFragment.TAG);
+                if (summonersFragment == null || !summonersFragment.isVisible()) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new FavoriteSummonersFragment(), FavoriteSummonersFragment.TAG)
+                            .addToBackStack(FavoriteSummonersFragment.TAG)
+                            .commit();
+                }
                 break;
             case "News":
-                startActivity(new Intent(this, NewsActivity.class));
+                NewsFragment newsFragment = (NewsFragment) getSupportFragmentManager().findFragmentByTag(NewsFragment.TAG);
+                if (newsFragment == null || !newsFragment.isVisible()) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new NewsFragment(), NewsFragment.TAG)
+                            .addToBackStack(NewsFragment.TAG)
+                            .commit();
+                }
                 break;
             default:
                 break;
         }
+        mDrawerLayout.closeDrawer(Gravity.START);
     }
 
     @Override public void onSummonerSelectedListener(Summoner summoner) {
         final Bundle bundle = new Bundle();
-        Fragment matchHistoryFragment = new MatchHistoryFragment();
+        Fragment fragment = new MatchHistoryFragment();
         bundle.putParcelable(Summoner.TAG, Parcels.wrap(summoner));
-        matchHistoryFragment.setArguments(bundle);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, matchHistoryFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        fragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment, MatchHistoryFragment.TAG)
+                .addToBackStack(NewsFragment.TAG)
+                .commit();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

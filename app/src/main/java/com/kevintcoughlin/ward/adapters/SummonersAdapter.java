@@ -35,7 +35,7 @@ public final class SummonersAdapter extends CursorRecyclerViewAdapter<SummonersA
     }
 
     @Override public SummonersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.summoners_item_view, parent, false);
+        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.summoners_item, parent, false);
         final ViewHolder vh = new ViewHolder(v);
         return vh;
     }
