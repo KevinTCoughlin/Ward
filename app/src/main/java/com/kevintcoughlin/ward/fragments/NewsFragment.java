@@ -1,8 +1,10 @@
 package com.kevintcoughlin.ward.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,8 +55,44 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
         mDetector = new GestureDetectorCompat(getActivity(), new RecyclerViewOnGestureListener());
         mRecyclerView.addOnItemTouchListener(this);
 
-        LeagueOfLegendsNewsClient.getClient().getFeed(this);
+        // @TODO: Repopulate feed if preference changes
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final String region = prefs.getString("region", "na");
+        final String language = "en";
 
+        // @TODO: Refactor somewhere, would be nice to use locale but don't think its possible
+        // @TODO: Support regions that don't follow normal url scheme (korean & russian)
+        // German: http://euw.leagueoflegends.com/de/rss.xml
+        /*
+        switch(region) {
+            case "na":
+                language = "en";
+                break;
+            case "br":
+                language = "pt";
+                break;
+            case "eune":
+                language = "en";
+                break;
+            case "euw":
+                language = "en";
+                break;
+            case "las":
+                language = "es";
+                break;
+            case "lan":
+                language = "es";
+                break;
+            case "tr":
+                language = "tr";
+                break;
+            default:
+                language = "en";
+                break;
+        }
+        */
+
+        LeagueOfLegendsNewsClient.getClient(region, language).getFeed(this);
         return view;
     }
 

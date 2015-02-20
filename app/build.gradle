@@ -14,7 +14,6 @@ repositories {
     maven { url 'http://download.crashlytics.com/maven' }
 }
 
-
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.1"
@@ -62,4 +61,5 @@ dependencies {
         exclude module: 'xpp3'
     }
     provided "org.parceler:parceler:0.2.15"
+    compile 'com.github.machinarius:preferencefragment:0.1.1'
 }

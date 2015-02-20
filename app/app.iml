@@ -102,6 +102,7 @@
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
+    <orderEntry type="library" exported="" name="preferencefragment-0.1.1" level="project" />
     <orderEntry type="library" exported="" name="floatingactionbutton-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="parceler-0.2.15" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />

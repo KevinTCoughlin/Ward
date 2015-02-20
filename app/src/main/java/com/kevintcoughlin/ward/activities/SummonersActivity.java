@@ -1,6 +1,5 @@
 package com.kevintcoughlin.ward.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -20,6 +19,7 @@ import com.kevintcoughlin.ward.R;
 import com.kevintcoughlin.ward.fragments.FavoriteSummonersFragment;
 import com.kevintcoughlin.ward.fragments.MatchHistoryFragment;
 import com.kevintcoughlin.ward.fragments.NewsFragment;
+import com.kevintcoughlin.ward.fragments.PrefsFragment;
 import com.kevintcoughlin.ward.models.Summoner;
 
 import org.parceler.Parcels;
@@ -87,7 +87,10 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
         // @TODO: Convert to string id ints
         switch (action) {
             case "Settings":
-                startActivity(new Intent(this, SettingsActivity.class));
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new PrefsFragment(), PrefsFragment.TAG)
+                        .addToBackStack(PrefsFragment.TAG)
+                        .commit();
                 break;
             case "Summoners":
                 FavoriteSummonersFragment summonersFragment = (FavoriteSummonersFragment) getSupportFragmentManager().findFragmentByTag(FavoriteSummonersFragment.TAG);

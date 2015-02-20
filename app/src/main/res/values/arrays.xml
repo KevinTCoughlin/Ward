@@ -1,5 +1,4 @@
 <resources>
-
     <string-array name="region_keys">
         <item>@string/north_america</item>
         <item>@string/brazil</item>
@@ -31,5 +30,4 @@
         <item>@string/news</item>
         <item>@string/summoners</item>
     </string-array>
-
 </resources>
