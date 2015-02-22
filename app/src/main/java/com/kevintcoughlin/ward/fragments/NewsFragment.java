@@ -15,7 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.kevintcoughlin.ward.R;
+import com.kevintcoughlin.ward.WardApplication;
 import com.kevintcoughlin.ward.adapters.NewsAdapter;
 import com.kevintcoughlin.ward.http.LeagueOfLegendsNewsClient;
 import com.kevintcoughlin.ward.models.news.Item;
@@ -38,6 +41,7 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Item> mNewsDataSet = new ArrayList<>();
     private GestureDetectorCompat mDetector;
+    private Tracker mTracker;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +61,11 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
         final String language = "en";
 
         LeagueOfLegendsNewsClient.getClient(region, language).getFeed(this);
+
+        mTracker = ((WardApplication) getActivity().getApplication()).getTracker();
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.AppViewBuilder().build());
+
         return view;
     }
 
@@ -103,7 +112,15 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
             final View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
             final int position = mRecyclerView.getChildPosition(view);
             if (position > -1) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mNewsDataSet.get(position).getLink())));
+                final String link = mNewsDataSet.get(position).getLink();
+                final String ACTION_VIEW_LINK = "View";
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory(TAG)
+                        .setAction(ACTION_VIEW_LINK)
+                        .setLabel(link)
+                        .build());
+
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
             }
             return super.onSingleTapConfirmed(e);
         }

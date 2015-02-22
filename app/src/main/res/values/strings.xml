@@ -32,4 +32,8 @@
     <string name="drawer_close">Close</string>
     <string name="news_item_image_content_description">News feed item image</string>
     <string name="navigation_item_icon_description">Navigation item icon</string>
+    <string name="anonymous_analytics_title">Anonymous Analytics</string>
+    <string name="anonymous_analytics_summary">Allow this application to anonymously track usage data.</string>
+    <string name="pref_ga_tracking_key">ga</string>
+    <string name="pref_region_list_key">region</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.kevintcoughlin.ward;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -22,13 +24,23 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class WardApplication extends Application {
     private final CupboardSQLiteOpenHelper db = new CupboardSQLiteOpenHelper(this);
-    private final String region = "na";
 
     @Override public void onCreate() {
         super.onCreate();
 
+        final String TRACKING_PREF_KEY = getResources().getString(R.string.pref_ga_tracking_key);
+        final SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener () {
+            @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                if (key.equals(TRACKING_PREF_KEY)) {
+                    GoogleAnalytics.getInstance(getApplicationContext()).setAppOptOut(sharedPreferences.getBoolean(key, false));
+                }
+            }
+        });
+
         // @TODO: Don't fetch this data every time
-        RiotGamesClient.getClient().listChampionsById(region, true, new Callback<ChampionData>() {
+        RiotGamesClient.getClient().listChampionsById("na", true, new Callback<ChampionData>() {
             @Override public void success(ChampionData championData, Response response) {
                 final HashMap<String, Champion> champions = championData.getData();
                 final DatabaseCompartment dbc = cupboard().withDatabase(db.getWritableDatabase());
@@ -49,7 +61,6 @@ public class WardApplication extends Application {
 
     public synchronized Tracker getTracker() {
         final GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-        final Tracker tracker = analytics.newTracker(R.xml.global_tracker);
-        return tracker;
+        return analytics.newTracker(R.xml.global_tracker);
     }
 }

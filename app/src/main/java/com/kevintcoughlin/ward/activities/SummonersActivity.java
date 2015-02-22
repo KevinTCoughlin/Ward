@@ -61,7 +61,7 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
                 return;
             }
 
-            FavoriteSummonersFragment fragment = new FavoriteSummonersFragment();
+            final FavoriteSummonersFragment fragment = new FavoriteSummonersFragment();
             fragment.setArguments(getIntent().getExtras());
             getSupportFragmentManager()
                     .beginTransaction()
@@ -104,7 +104,7 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
         final boolean popped = manager.popBackStackImmediate(tag, 0);
 
         if (!popped) {
-            FragmentTransaction ft = manager.beginTransaction();
+            final FragmentTransaction ft = manager.beginTransaction();
             ft.replace(R.id.fragment_container, fragment);
             ft.addToBackStack(tag);
             ft.commit();
@@ -113,7 +113,7 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
 
     @Override public void onSummonerSelectedListener(Summoner summoner) {
         final Bundle bundle = new Bundle();
-        Fragment fragment = new MatchHistoryFragment();
+        final Fragment fragment = new MatchHistoryFragment();
         bundle.putParcelable(Summoner.TAG, Parcels.wrap(summoner));
         fragment.setArguments(bundle);
         replaceFragment(fragment);
