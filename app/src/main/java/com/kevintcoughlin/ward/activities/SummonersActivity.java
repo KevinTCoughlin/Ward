@@ -12,12 +12,12 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.crashlytics.android.Crashlytics;
 import com.kevintcoughlin.ward.BuildConfig;
 import com.kevintcoughlin.ward.R;
+import com.kevintcoughlin.ward.adapters.DrawerNavigationAdapter;
 import com.kevintcoughlin.ward.fragments.FavoriteSummonersFragment;
 import com.kevintcoughlin.ward.fragments.MatchHistoryFragment;
 import com.kevintcoughlin.ward.fragments.NewsFragment;
@@ -50,15 +50,10 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
         getSupportActionBar().setHomeButtonEnabled(true);
 
         mNavigationMenuItems = getResources().getStringArray(R.array.navigation_menu_items);
-        mDrawerList.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mNavigationMenuItems));
+        mDrawerList.setDividerHeight(0);
+        mDrawerList.setAdapter(new DrawerNavigationAdapter(this, mNavigationMenuItems));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,
-                mDrawerLayout,
-                mToolbar,
-                R.string.drawer_open,
-                R.string.drawer_close
-        );
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (findViewById(R.id.fragment_container) != null) {

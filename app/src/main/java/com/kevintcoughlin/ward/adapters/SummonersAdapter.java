@@ -20,8 +20,9 @@ public final class SummonersAdapter extends CursorRecyclerViewAdapter<SummonersA
     private Context mContext;
 
     public final static class ViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.name) TextView mTextView;
+        @InjectView(R.id.name) TextView mNameView;
         @InjectView(R.id.avatar) CircleImageView mAvatarView;
+        @InjectView(R.id.description) TextView mDescriptionView;
 
         public ViewHolder(View v) {
             super(v);
@@ -36,13 +37,13 @@ public final class SummonersAdapter extends CursorRecyclerViewAdapter<SummonersA
 
     @Override public SummonersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.summoners_item, parent, false);
-        final ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
         final Summoner summoner = Summoner.fromCursor(cursor);
-        holder.mTextView.setText(summoner.getName());
+        holder.mNameView.setText(summoner.getName());
+        holder.mDescriptionView.setText(String.format("Level %d • %s", summoner.getSummonerLevel(), summoner.getRegion().toUpperCase()));
         Picasso.with(mContext)
                 .load("http://ddragon.leagueoflegends.com/cdn/4.10.7/img/profileicon/" + summoner.getProfileIconId() + ".png")
                 .into(holder.mAvatarView);

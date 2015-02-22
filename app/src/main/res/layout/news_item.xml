@@ -4,7 +4,10 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/margin">
+    android:paddingLeft="@dimen/margin"
+    android:paddingRight="@dimen/margin"
+    android:paddingTop="@dimen/marginHalf"
+    android:paddingBottom="@dimen/marginHalf">
 
     <ImageView
         android:id="@+id/image"
