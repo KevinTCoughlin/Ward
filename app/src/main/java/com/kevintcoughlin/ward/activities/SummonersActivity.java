@@ -23,27 +23,28 @@ import com.kevintcoughlin.ward.fragments.MatchHistoryFragment;
 import com.kevintcoughlin.ward.fragments.NewsFragment;
 import com.kevintcoughlin.ward.fragments.PrefsFragment;
 import com.kevintcoughlin.ward.models.Summoner;
+import com.mopub.mobileads.MoPubView;
 
 import org.parceler.Parcels;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import io.fabric.sdk.android.Fabric;
 
 public final class SummonersActivity extends ActionBarActivity implements FavoriteSummonersFragment.OnSummonerSelectedListener {
     @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @InjectView(R.id.left_drawer) ListView mDrawerList;
+    @InjectView(R.id.ad) MoPubView moPubView;
     private String[] mNavigationMenuItems;
     private ActionBarDrawerToggle mDrawerToggle;
+    private static final String MOPUB_BANNER_AD_UNIT_ID = "f68c885e885b4963ad62bf2913a2f100";
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_summoners);
         ButterKnife.inject(this);
-
-        if (!BuildConfig.DEBUG) {
-            Crashlytics.start(this);
-        }
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -68,6 +69,10 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
                     .replace(R.id.fragment_container, fragment, FavoriteSummonersFragment.TAG)
                     .commit();
         }
+
+        moPubView.setTesting(BuildConfig.DEBUG);
+        moPubView.setAdUnitId(MOPUB_BANNER_AD_UNIT_ID);
+        moPubView.loadAd();
     }
 
     @Override protected void onPostCreate(Bundle savedInstanceState) {
@@ -117,6 +122,11 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
         bundle.putParcelable(Summoner.TAG, Parcels.wrap(summoner));
         fragment.setArguments(bundle);
         replaceFragment(fragment);
+    }
+
+    @Override protected void onDestroy() {
+        moPubView.destroy();
+        super.onDestroy();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

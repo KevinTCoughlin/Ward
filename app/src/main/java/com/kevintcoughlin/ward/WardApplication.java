@@ -11,11 +11,13 @@ import com.kevintcoughlin.ward.database.CupboardSQLiteOpenHelper;
 import com.kevintcoughlin.ward.http.RiotGamesClient;
 import com.kevintcoughlin.ward.models.Champion;
 import com.kevintcoughlin.ward.models.ChampionData;
+import com.mopub.common.MoPub;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import io.fabric.sdk.android.Fabric;
 import nl.qbusict.cupboard.DatabaseCompartment;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -23,11 +25,12 @@ import retrofit.client.Response;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public class WardApplication extends Application {
+public final class WardApplication extends Application {
     private final CupboardSQLiteOpenHelper db = new CupboardSQLiteOpenHelper(this);
 
     @Override public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new MoPub());
 
         if (BuildConfig.DEBUG) {
             Stetho.initialize(Stetho.newInitializerBuilder(this)

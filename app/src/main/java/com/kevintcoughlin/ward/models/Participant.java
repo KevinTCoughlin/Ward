@@ -8,7 +8,7 @@ import org.parceler.Parcel;
  * runes	List[Rune]	List of rune information
  */
 @Parcel
-public class Participant {
+public final class Participant {
     private int championId;
     private String highestAchievedSeasonTier;
     private int participantId;

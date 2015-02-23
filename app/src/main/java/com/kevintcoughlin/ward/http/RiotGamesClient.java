@@ -3,7 +3,7 @@ package com.kevintcoughlin.ward.http;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 
-public class RiotGamesClient {
+public final class RiotGamesClient {
     private static final String apiKey = "70328b7e-c373-44b9-9336-6832cda44559";
     private static RiotGamesEndpoint mEndpoint = new RiotGamesEndpoint();
 

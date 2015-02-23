@@ -45,7 +45,7 @@ import retrofit.client.Response;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public class FavoriteSummonersFragment extends Fragment implements RecyclerView.OnItemTouchListener, FloatingActionButton.OnClickListener {
+public final class FavoriteSummonersFragment extends Fragment implements RecyclerView.OnItemTouchListener, FloatingActionButton.OnClickListener {
     @InjectView(R.id.list) RecyclerView mRecyclerView;
     @InjectView(R.id.fab) FloatingActionButton mFab;
     public static final String TAG = "Summoners";

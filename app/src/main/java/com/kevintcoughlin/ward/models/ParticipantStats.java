@@ -66,7 +66,7 @@ import org.parceler.Parcel;
     winner	boolean	Flag indicating whether or not the participant won
  */
 @Parcel
-public class ParticipantStats {
+public final class ParticipantStats {
     private boolean winner;
     private long kills;
     private long deaths;

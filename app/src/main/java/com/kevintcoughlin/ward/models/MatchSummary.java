@@ -5,7 +5,7 @@ import org.parceler.Parcel;
 import java.util.List;
 
 @Parcel
-public class MatchSummary {
+public final class MatchSummary {
     private int mapId;
     private long matchCreation;
     private long matchDuration;

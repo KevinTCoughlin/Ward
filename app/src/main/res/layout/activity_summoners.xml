@@ -17,7 +17,15 @@
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="56dp"/>
+            android:layout_marginTop="@dimen/ad_dimen"
+            android:layout_marginBottom="@dimen/ad_dimen"/>
+
+        <com.mopub.mobileads.MoPubView
+            android:id="@+id/ad"
+            android:layout_alignParentBottom="true"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/ad_dimen"/>
+
     </RelativeLayout>
 
     <ListView android:id="@+id/left_drawer"

@@ -2,7 +2,7 @@ package com.kevintcoughlin.ward.models;
 
 import java.util.HashMap;
 
-public class ChampionData {
+public final class ChampionData {
     private HashMap<String, Champion> data;
 
     public HashMap<String, Champion> getData() {
