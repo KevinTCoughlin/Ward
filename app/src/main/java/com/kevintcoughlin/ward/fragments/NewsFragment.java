@@ -55,6 +55,7 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
         getActivity().setTitle(TAG);
         final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.purple_400, R.color.purple_500, R.color.purple_600);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new NewsAdapter(getActivity(), mNewsDataSet);

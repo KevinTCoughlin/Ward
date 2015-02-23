@@ -52,6 +52,7 @@ public final class MatchHistoryFragment extends Fragment implements SwipeRefresh
 
         mContext = this.getActivity().getApplicationContext();
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.purple_400, R.color.purple_500, R.color.purple_600);
         mRecyclerView.setHasFixedSize(true);
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);

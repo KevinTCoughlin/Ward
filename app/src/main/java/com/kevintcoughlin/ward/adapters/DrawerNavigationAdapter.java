@@ -1,9 +1,6 @@
 package com.kevintcoughlin.ward.adapters;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,24 +41,21 @@ public final class DrawerNavigationAdapter extends ArrayAdapter<String> {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
         int iconId = 0;
         switch(position) {
             case 0:
-                iconId = R.drawable.ic_whatshot_black_24dp;
+                iconId = R.drawable.ic_whatshot_white_24dp;
                 break;
             case 1:
-                iconId = R.drawable.ic_people_black_24dp;
+                iconId = R.drawable.ic_people_white_24dp;
                 break;
             case 2:
-                iconId = R.drawable.ic_settings_black_24dp;
+                iconId = R.drawable.ic_settings_white_24dp;
                 break;
         }
-
-        final Drawable d = mContext.getResources().getDrawable(iconId);
-        d.setColorFilter((new PorterDuffColorFilter(R.color.purple_500, PorterDuff.Mode.MULTIPLY)));
         viewHolder.mTextView.setText(mDataSet[position]);
-        viewHolder.mIconView.setImageDrawable(d);
+        viewHolder.mIconView.setImageDrawable(mContext.getResources().getDrawable(iconId));
+        viewHolder.mIconView.setColorFilter(mContext.getResources().getColor(R.color.purple_500));
         return convertView;
     }
 
