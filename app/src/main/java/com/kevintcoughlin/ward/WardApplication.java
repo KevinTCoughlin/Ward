@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.kevintcoughlin.ward.database.CupboardSQLiteOpenHelper;
@@ -28,6 +29,13 @@ public class WardApplication extends Application {
     @Override public void onCreate() {
         super.onCreate();
 
+        if (BuildConfig.DEBUG) {
+            Stetho.initialize(Stetho.newInitializerBuilder(this)
+                .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
+                .build());
+        }
+
         final String TRACKING_PREF_KEY = getResources().getString(R.string.pref_ga_tracking_key);
         final SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -39,7 +47,7 @@ public class WardApplication extends Application {
             }
         });
 
-        // @TODO: Don't fetch this data every time
+        // @TODO: Don't fetch this data every timeca
         RiotGamesClient.getClient().listChampionsById("na", true, new Callback<ChampionData>() {
             @Override public void success(ChampionData championData, Response response) {
                 final HashMap<String, Champion> champions = championData.getData();

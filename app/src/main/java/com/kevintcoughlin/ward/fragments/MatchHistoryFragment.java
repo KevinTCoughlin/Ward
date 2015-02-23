@@ -3,6 +3,7 @@ package com.kevintcoughlin.ward.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -34,7 +35,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public final class MatchHistoryFragment extends Fragment implements Callback<Map<String, List<MatchSummary>>> {
+public final class MatchHistoryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, Callback<Map<String, List<MatchSummary>>> {
+    @InjectView(R.id.swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
     @InjectView(R.id.list) RecyclerView mRecyclerView;
     public static final String TAG = "Match History";
     private final String MATCHES_KEY = "matches"; // @TODO: Move into API service
@@ -49,6 +51,7 @@ public final class MatchHistoryFragment extends Fragment implements Callback<Map
         ButterKnife.inject(this, view);
 
         mContext = this.getActivity().getApplicationContext();
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         mRecyclerView.setHasFixedSize(true);
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -106,6 +109,10 @@ public final class MatchHistoryFragment extends Fragment implements Callback<Map
         if (matchHistory == null || matchHistory.size() <= 0) {
             Toast.makeText(mContext, getString(R.string.no_recent_games), Toast.LENGTH_SHORT).show();
         } else {
+            if (!mMatchSummaries.isEmpty()) {
+                mMatchSummaries.clear();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
             Collections.reverse(matchHistory);
             mMatchSummaries.addAll(matchHistory);
             mAdapter.notifyDataSetChanged();
@@ -114,5 +121,10 @@ public final class MatchHistoryFragment extends Fragment implements Callback<Map
 
     @Override public void failure(RetrofitError error) {
         Toast.makeText(mContext, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override public void onRefresh() {
+        final Summoner summoner = Parcels.unwrap(getArguments().getParcelable(Summoner.TAG));
+        RiotGamesClient.getClient(summoner.getRegion()).listMatchesById(summoner.getRegion(), summoner.getId(), this);
     }
 }

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -35,9 +36,12 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public final class NewsFragment extends Fragment implements RecyclerView.OnItemTouchListener, Callback<Rss> {
+public final class NewsFragment extends Fragment implements RecyclerView.OnItemTouchListener, Callback<Rss>, SwipeRefreshLayout.OnRefreshListener {
+    @InjectView(R.id.swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
     @InjectView(R.id.list) RecyclerView mRecyclerView;
     public static final String TAG = "News";
+    private final String region = "na";
+    private final String language = "en";
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Item> mNewsDataSet = new ArrayList<>();
     private GestureDetectorCompat mDetector;
@@ -50,15 +54,13 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
 
         getActivity().setTitle(TAG);
         final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new NewsAdapter(getActivity(), mNewsDataSet);
         mRecyclerView.setAdapter(mAdapter);
         mDetector = new GestureDetectorCompat(getActivity(), new RecyclerViewOnGestureListener());
         mRecyclerView.addOnItemTouchListener(this);
-
-        final String region = "na";
-        final String language = "en";
 
         LeagueOfLegendsNewsClient.getClient(region, language).getFeed(this);
 
@@ -80,7 +82,10 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
             }
             item.setDescription(stripHtml(item.getDescription()));
         }
-
+        if (!mNewsDataSet.isEmpty()) {
+            mNewsDataSet.clear();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
         mNewsDataSet.addAll(rss.getChannel().getItems());
         mAdapter.notifyDataSetChanged();
     }
@@ -106,6 +111,11 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
     }
 
     @Override public void onTouchEvent(RecyclerView rv, MotionEvent e) {}
+
+    @Override
+    public void onRefresh() {
+        LeagueOfLegendsNewsClient.getClient(region, language).getFeed(this);
+    }
 
     private class RecyclerViewOnGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override public boolean onSingleTapConfirmed(MotionEvent e) {
