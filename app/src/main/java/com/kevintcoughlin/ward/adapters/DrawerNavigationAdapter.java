@@ -52,6 +52,9 @@ public final class DrawerNavigationAdapter extends ArrayAdapter<String> {
             case 2:
                 iconId = R.drawable.ic_settings_white_24dp;
                 break;
+            default:
+                iconId = R.drawable.ic_people_white_24dp;
+                break;
         }
         viewHolder.mTextView.setText(mDataSet[position]);
         viewHolder.mIconView.setImageDrawable(mContext.getResources().getDrawable(iconId));
