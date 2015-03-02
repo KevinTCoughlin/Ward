@@ -33,7 +33,6 @@ import com.kevintcoughlin.ward.models.Summoner;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -176,15 +175,10 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
         RiotGamesClient.getClient(region).listSummonersByNames(region, name, new Callback<Map<String, Summoner>>() {
             @Override public void success(Map<String, Summoner> stringSummonerMap, Response response) {
                 final DatabaseCompartment dbc = cupboard().withDatabase(db.getWritableDatabase());
-                final Iterator it = stringSummonerMap.entrySet().iterator();
-
-                while (it.hasNext()) {
-                    final Map.Entry pairs = (Map.Entry) it.next();
-                    final Summoner summoner = (Summoner) pairs.getValue();
+                for (final Map.Entry<String, Summoner> pair : stringSummonerMap.entrySet()) {
+                    final Summoner summoner = pair.getValue();
                     summoner.setRegion(region);
                     dbc.put(summoner);
-                    it.remove();
-
                     mTracker.send(new HitBuilders.EventBuilder()
                             .setCategory(TAG)
                             .setAction(ACTION_ADD)

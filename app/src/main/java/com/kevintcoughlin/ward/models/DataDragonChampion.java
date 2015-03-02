@@ -1,12 +1,16 @@
 package com.kevintcoughlin.ward.models;
 
-import java.util.HashMap;
+public final class DataDragonChampion extends BaseChampion {
+    public Image image;
 
-public class DataDragonChampion extends BaseChampion {
-    public String id;
-    public HashMap<String, Image> image;
-
-    public class Image {
-        public HashMap<String, String> full;
+    public final class Image {
+        public String full;
+        public String sprite;
+        public String group;
+        public int x;
+        public int y;
+        public int w;
+        public int h;
     }
 }
+

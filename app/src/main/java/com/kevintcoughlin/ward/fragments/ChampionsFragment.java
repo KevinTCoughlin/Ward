@@ -12,11 +12,13 @@ import android.widget.Toast;
 import com.kevintcoughlin.ward.R;
 import com.kevintcoughlin.ward.adapters.ChampionsAdapter;
 import com.kevintcoughlin.ward.http.DataDragonClient;
+import com.kevintcoughlin.ward.http.RiotGamesClient;
+import com.kevintcoughlin.ward.models.ChampionMetaData;
 import com.kevintcoughlin.ward.models.DataDragonChampion;
 import com.kevintcoughlin.ward.models.DataDragonChampionsData;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -28,8 +30,9 @@ import retrofit.client.Response;
 public final class ChampionsFragment extends Fragment implements Callback<DataDragonChampionsData> {
     @InjectView(R.id.list) RecyclerView mRecyclerView;
     public static final String TAG = "Champions";
-    private RecyclerView.Adapter mAdapter;
+    private ChampionsAdapter mAdapter;
     private ArrayList<DataDragonChampion> mChampions = new ArrayList<>();
+    private HashMap<Integer, DataDragonChampion> mChampionsData = new HashMap<>();
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,18 +48,35 @@ public final class ChampionsFragment extends Fragment implements Callback<DataDr
         mRecyclerView.setAdapter(mAdapter);
 
         DataDragonClient.getClient().getChampions(this);
+
         return view;
     }
 
+    private void getFreeToPlay() {
+        RiotGamesClient.getClient().listChampions("na", true, new Callback<Map<String, ChampionMetaData[]>>() {
+            @Override
+            public void success(Map<String, ChampionMetaData[]> stringChampionMetaDataMap, Response response) {
+                for (final ChampionMetaData meta : stringChampionMetaDataMap.get("champions")) {
+                    final DataDragonChampion champion = mChampionsData.get(meta.id);
+                    champion.setFreeToPlay(meta.freeToPlay);
+                }
+                mAdapter.sort();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
     @Override public void success(DataDragonChampionsData dataDragonChampionsData, Response response) {
-        final Iterator it = dataDragonChampionsData.data.entrySet().iterator();
-        while (it.hasNext()) {
-            final Map.Entry pairs = (Map.Entry) it.next();
-            final DataDragonChampion champion = (DataDragonChampion) pairs.getValue();
-            mChampions.add(champion);
-            it.remove();
+        for (final Map.Entry<String, DataDragonChampion> champion : dataDragonChampionsData.data.entrySet()) {
+            mChampionsData.put(Integer.valueOf(champion.getValue().getKey()), champion.getValue());
         }
+        mChampions.addAll(mChampionsData.values());
         mAdapter.notifyDataSetChanged();
+        getFreeToPlay();
     }
 
     @Override public void failure(RetrofitError error) {

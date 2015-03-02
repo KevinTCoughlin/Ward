@@ -13,8 +13,6 @@ import com.kevintcoughlin.ward.models.Champion;
 import com.kevintcoughlin.ward.models.ChampionData;
 import com.mopub.common.MoPub;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
@@ -50,21 +48,18 @@ public final class WardApplication extends Application {
             }
         });
 
-        // @TODO: Don't fetch this data every timeca
-        RiotGamesClient.getClient().listChampionsById("na", true, new Callback<ChampionData>() {
-            @Override public void success(ChampionData championData, Response response) {
-                final HashMap<String, Champion> champions = championData.getData();
+        // @TODO: Don't fetch this data every time
+        RiotGamesClient.getClient().listChampionsById("na", false, new Callback<ChampionData>() {
+            @Override
+            public void success(ChampionData data, Response response) {
                 final DatabaseCompartment dbc = cupboard().withDatabase(db.getWritableDatabase());
-                final Iterator it = champions.entrySet().iterator();
-                while (it.hasNext()) {
-                    final Map.Entry pairs = (Map.Entry) it.next();
-                    final Champion champion = (Champion) pairs.getValue();
-                    dbc.put(champion);
-                    it.remove();
+                for (final Map.Entry<String, Champion> entry : data.getData().entrySet()) {
+                    dbc.put(entry.getValue());
                 }
             }
 
-            @Override public void failure(RetrofitError error) {
+            @Override
+            public void failure(RetrofitError error) {
 
             }
         });

@@ -13,6 +13,8 @@ import com.kevintcoughlin.ward.models.DataDragonChampion;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -48,13 +50,30 @@ public final class ChampionsAdapter extends RecyclerView.Adapter<ChampionsAdapte
         final DataDragonChampion champion = mChampions.get(position);
 
         Picasso.with(mContext)
-                .load("http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + full + ".png")
+                .load("http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/" + champion.image.full)
                 .fit()
                 .centerCrop()
                 .into(holder.mChampionArtwork);
     }
 
+    public void sort() {
+        Collections.sort(mChampions, new ChampionComparator());
+        notifyDataSetChanged();
+    }
+
     @Override public int getItemCount() {
         return mChampions.size();
+    }
+
+    private final class ChampionComparator implements Comparator<DataDragonChampion> {
+        @Override
+        public int compare(DataDragonChampion lhs, DataDragonChampion rhs) {
+            return Boolean.compare(rhs.isFreeToPlay(), lhs.isFreeToPlay());
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            return false;
+        }
     }
 }

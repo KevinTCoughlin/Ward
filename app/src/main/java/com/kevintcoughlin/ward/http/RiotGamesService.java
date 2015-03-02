@@ -1,6 +1,7 @@
 package com.kevintcoughlin.ward.http;
 
 import com.kevintcoughlin.ward.models.ChampionData;
+import com.kevintcoughlin.ward.models.ChampionMetaData;
 import com.kevintcoughlin.ward.models.MatchSummary;
 import com.kevintcoughlin.ward.models.Summoner;
 
@@ -29,4 +30,7 @@ public interface RiotGamesService {
 
     @GET("/api/lol/static-data/{region}/v1.2/champion")
     void listChampionsById(@Path("region") String region, @Query("dataById") boolean dataById, Callback<ChampionData> callback);
+
+    @GET("/api/lol/{region}/v1.2/champion")
+    void listChampions(@Path("region") String region, @Query("freeToPlay") boolean freeToPlayOnly, Callback<Map<String, ChampionMetaData[]>> callback);
 }

@@ -26,7 +26,6 @@ import com.kevintcoughlin.ward.models.news.Item;
 import com.kevintcoughlin.ward.models.news.Rss;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,8 +72,7 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
     }
 
     @Override public void success(Rss rss, Response response) {
-        final List<Item> items = rss.getChannel().getItems();
-        for (Item item : items) {
+        for (final Item item : rss.getChannel().getItems()) {
             // @TODO: Move this parsing
             final Pattern p = Pattern.compile("src=\"(.*?)\"");
             final Matcher m = p.matcher(item.getDescription());
