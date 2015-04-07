@@ -12,16 +12,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.kevintcoughlin.ward.R;
@@ -31,16 +28,13 @@ import com.kevintcoughlin.ward.database.CupboardSQLiteOpenHelper;
 import com.kevintcoughlin.ward.http.RiotGamesClient;
 import com.kevintcoughlin.ward.models.Summoner;
 import com.melnykov.fab.FloatingActionButton;
-
-import java.util.Arrays;
-import java.util.Map;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import nl.qbusict.cupboard.DatabaseCompartment;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import java.util.Arrays;
+import java.util.Map;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
@@ -202,8 +196,7 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
     }
 
     @Override public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        mDetector.onTouchEvent(e);
-        return false;
+        return mDetector.onTouchEvent(e);
     }
 
     @Override public void onTouchEvent(RecyclerView rv, MotionEvent e) {

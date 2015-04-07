@@ -29,6 +29,6 @@
         <item>@string/news</item>
         <item>@string/summoners</item>
         <item>@string/settings</item>
-        <item>@string/champions</item>
+        <!--<item>@string/champions</item>-->
     </string-array>
 </resources>

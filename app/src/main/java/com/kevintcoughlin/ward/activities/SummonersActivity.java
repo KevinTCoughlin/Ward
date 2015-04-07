@@ -13,24 +13,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.crashlytics.android.Crashlytics;
 import com.kevintcoughlin.ward.R;
 import com.kevintcoughlin.ward.adapters.DrawerNavigationAdapter;
-import com.kevintcoughlin.ward.fragments.ChampionsFragment;
-import com.kevintcoughlin.ward.fragments.FavoriteSummonersFragment;
-import com.kevintcoughlin.ward.fragments.MatchHistoryFragment;
-import com.kevintcoughlin.ward.fragments.NewsFragment;
-import com.kevintcoughlin.ward.fragments.PrefsFragment;
+import com.kevintcoughlin.ward.fragments.*;
+import com.kevintcoughlin.ward.models.DataDragonChampion;
 import com.kevintcoughlin.ward.models.Summoner;
-
+import io.fabric.sdk.android.Fabric;
 import org.parceler.Parcels;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import io.fabric.sdk.android.Fabric;
-
-public final class SummonersActivity extends ActionBarActivity implements FavoriteSummonersFragment.OnSummonerSelectedListener {
+public final class SummonersActivity extends ActionBarActivity implements FavoriteSummonersFragment.OnSummonerSelectedListener, ChampionsFragment.OnChampionSelectedListener {
     @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @InjectView(R.id.left_drawer) ListView mDrawerList;
@@ -117,6 +111,14 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
         final Bundle bundle = new Bundle();
         final Fragment fragment = new MatchHistoryFragment();
         bundle.putParcelable(Summoner.TAG, Parcels.wrap(summoner));
+        fragment.setArguments(bundle);
+        replaceFragment(fragment);
+    }
+
+    @Override public void onChampionSelectedListener(DataDragonChampion champion) {
+        final Bundle bundle = new Bundle();
+        final Fragment fragment = new ChampionFragment();
+        bundle.putParcelable(DataDragonChampion.TAG, Parcels.wrap(champion));
         fragment.setArguments(bundle);
         replaceFragment(fragment);
     }

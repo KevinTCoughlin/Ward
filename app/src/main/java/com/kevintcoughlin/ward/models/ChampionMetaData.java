@@ -1,6 +1,6 @@
 package com.kevintcoughlin.ward.models;
 
-public class ChampionMetaData {
+public final class ChampionMetaData {
     public boolean botMmEnabled;
     public int id;
     public boolean rankedPlayEnabled;
