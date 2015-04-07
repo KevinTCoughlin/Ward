@@ -13,29 +13,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import com.crashlytics.android.Crashlytics;
-import com.kevintcoughlin.ward.BuildConfig;
-import com.kevintcoughlin.ward.R;
-import com.kevintcoughlin.ward.adapters.DrawerNavigationAdapter;
-import com.kevintcoughlin.ward.fragments.FavoriteSummonersFragment;
-import com.kevintcoughlin.ward.fragments.MatchHistoryFragment;
-import com.kevintcoughlin.ward.fragments.NewsFragment;
-import com.kevintcoughlin.ward.fragments.PrefsFragment;
-import com.kevintcoughlin.ward.models.Summoner;
-import com.mopub.mobileads.MoPubView;
-
-import org.parceler.Parcels;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.crashlytics.android.Crashlytics;
+import com.kevintcoughlin.ward.R;
+import com.kevintcoughlin.ward.adapters.DrawerNavigationAdapter;
+import com.kevintcoughlin.ward.fragments.*;
+import com.kevintcoughlin.ward.models.DataDragonChampion;
+import com.kevintcoughlin.ward.models.Summoner;
 import io.fabric.sdk.android.Fabric;
+import org.parceler.Parcels;
 
-public final class SummonersActivity extends ActionBarActivity implements FavoriteSummonersFragment.OnSummonerSelectedListener {
+public final class SummonersActivity extends ActionBarActivity implements FavoriteSummonersFragment.OnSummonerSelectedListener, ChampionsFragment.OnChampionSelectedListener {
     @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @InjectView(R.id.left_drawer) ListView mDrawerList;
-    @InjectView(R.id.ad) MoPubView moPubView;
     private String[] mNavigationMenuItems;
     private ActionBarDrawerToggle mDrawerToggle;
     private static final String MOPUB_BANNER_AD_UNIT_ID = "f68c885e885b4963ad62bf2913a2f100";
@@ -69,10 +61,6 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
                     .replace(R.id.fragment_container, fragment, FavoriteSummonersFragment.TAG)
                     .commit();
         }
-
-        moPubView.setTesting(BuildConfig.DEBUG);
-        moPubView.setAdUnitId(MOPUB_BANNER_AD_UNIT_ID);
-        moPubView.loadAd();
     }
 
     @Override protected void onPostCreate(Bundle savedInstanceState) {
@@ -97,13 +85,16 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
             case "News":
                 replaceFragment(new NewsFragment());
                 break;
+            case "Champions":
+                replaceFragment(new ChampionsFragment());
+                break;
             default:
                 break;
         }
         mDrawerLayout.closeDrawer(Gravity.START);
     }
 
-    private void replaceFragment (Fragment fragment){
+    private void replaceFragment(Fragment fragment){
         final String tag = fragment.getClass().getName();
         final FragmentManager manager = getSupportFragmentManager();
         final boolean popped = manager.popBackStackImmediate(tag, 0);
@@ -124,9 +115,12 @@ public final class SummonersActivity extends ActionBarActivity implements Favori
         replaceFragment(fragment);
     }
 
-    @Override protected void onDestroy() {
-        moPubView.destroy();
-        super.onDestroy();
+    @Override public void onChampionSelectedListener(DataDragonChampion champion) {
+        final Bundle bundle = new Bundle();
+        final Fragment fragment = new ChampionFragment();
+        bundle.putParcelable(DataDragonChampion.TAG, Parcels.wrap(champion));
+        fragment.setArguments(bundle);
+        replaceFragment(fragment);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

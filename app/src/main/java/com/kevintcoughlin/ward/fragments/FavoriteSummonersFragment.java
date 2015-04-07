@@ -12,16 +12,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.kevintcoughlin.ward.R;
@@ -31,17 +28,13 @@ import com.kevintcoughlin.ward.database.CupboardSQLiteOpenHelper;
 import com.kevintcoughlin.ward.http.RiotGamesClient;
 import com.kevintcoughlin.ward.models.Summoner;
 import com.melnykov.fab.FloatingActionButton;
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import nl.qbusict.cupboard.DatabaseCompartment;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import java.util.Arrays;
+import java.util.Map;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
@@ -176,15 +169,10 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
         RiotGamesClient.getClient(region).listSummonersByNames(region, name, new Callback<Map<String, Summoner>>() {
             @Override public void success(Map<String, Summoner> stringSummonerMap, Response response) {
                 final DatabaseCompartment dbc = cupboard().withDatabase(db.getWritableDatabase());
-                final Iterator it = stringSummonerMap.entrySet().iterator();
-
-                while (it.hasNext()) {
-                    final Map.Entry pairs = (Map.Entry) it.next();
-                    final Summoner summoner = (Summoner) pairs.getValue();
+                for (final Map.Entry<String, Summoner> pair : stringSummonerMap.entrySet()) {
+                    final Summoner summoner = pair.getValue();
                     summoner.setRegion(region);
                     dbc.put(summoner);
-                    it.remove();
-
                     mTracker.send(new HitBuilders.EventBuilder()
                             .setCategory(TAG)
                             .setAction(ACTION_ADD)
@@ -208,8 +196,7 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
     }
 
     @Override public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        mDetector.onTouchEvent(e);
-        return false;
+        return mDetector.onTouchEvent(e);
     }
 
     @Override public void onTouchEvent(RecyclerView rv, MotionEvent e) {

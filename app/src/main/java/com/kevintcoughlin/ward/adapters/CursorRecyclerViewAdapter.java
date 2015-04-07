@@ -88,7 +88,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
      * {@link #changeCursor(Cursor)}, the returned old Cursor is <em>not</em>
      * closed.
      */
-    public Cursor swapCursor(Cursor newCursor) {
+    public final Cursor swapCursor(Cursor newCursor) {
         if (newCursor == mCursor) {
             return null;
         }
@@ -108,12 +108,11 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
             mRowIdColumn = -1;
             mDataValid = false;
             notifyDataSetChanged();
-            //There is no notifyDataSetInvalidated() method in RecyclerView.Adapter
         }
         return oldCursor;
     }
 
-    private class NotifyingDataSetObserver extends DataSetObserver {
+    private final class NotifyingDataSetObserver extends DataSetObserver {
         @Override public void onChanged() {
             super.onChanged();
             mDataValid = true;
@@ -124,7 +123,6 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
             super.onInvalidated();
             mDataValid = false;
             notifyDataSetChanged();
-            //There is no notifyDataSetInvalidated() method in RecyclerView.Adapter
         }
     }
 }
