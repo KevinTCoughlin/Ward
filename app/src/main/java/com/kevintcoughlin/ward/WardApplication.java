@@ -3,7 +3,6 @@ package com.kevintcoughlin.ward;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -11,15 +10,12 @@ import com.kevintcoughlin.ward.database.CupboardSQLiteOpenHelper;
 import com.kevintcoughlin.ward.http.RiotGamesClient;
 import com.kevintcoughlin.ward.models.Champion;
 import com.kevintcoughlin.ward.models.ChampionData;
-import com.mopub.common.MoPub;
-
-import java.util.Map;
-
-import io.fabric.sdk.android.Fabric;
 import nl.qbusict.cupboard.DatabaseCompartment;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import java.util.Map;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
@@ -28,7 +24,6 @@ public final class WardApplication extends Application {
 
     @Override public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new MoPub());
 
         if (BuildConfig.DEBUG) {
             Stetho.initialize(Stetho.newInitializerBuilder(this)

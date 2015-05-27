@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -24,23 +24,20 @@ import com.kevintcoughlin.ward.models.Summoner;
 import io.fabric.sdk.android.Fabric;
 import org.parceler.Parcels;
 
-public final class SummonersActivity extends ActionBarActivity implements FavoriteSummonersFragment.OnSummonerSelectedListener, ChampionsFragment.OnChampionSelectedListener {
+public final class SummonersActivity extends AppCompatActivity implements FavoriteSummonersFragment
+        .OnSummonerSelectedListener, ChampionsFragment.OnChampionSelectedListener {
     @InjectView(R.id.toolbar_actionbar) Toolbar mToolbar;
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @InjectView(R.id.left_drawer) ListView mDrawerList;
     private String[] mNavigationMenuItems;
     private ActionBarDrawerToggle mDrawerToggle;
-    private static final String MOPUB_BANNER_AD_UNIT_ID = "f68c885e885b4963ad62bf2913a2f100";
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_summoners);
         ButterKnife.inject(this);
-
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
         mNavigationMenuItems = getResources().getStringArray(R.array.navigation_menu_items);
         mDrawerList.setDividerHeight(0);
