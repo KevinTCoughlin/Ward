@@ -1,47 +1,42 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/margin"
-    android:paddingRight="@dimen/margin"
-    android:paddingTop="@dimen/marginHalf"
-    android:paddingBottom="@dimen/marginHalf">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:paddingBottom="@dimen/marginHalf"
+	android:paddingLeft="@dimen/margin"
+	android:paddingRight="@dimen/margin"
+	android:paddingTop="@dimen/marginHalf">
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:contentDescription="@string/news_item_image_content_description"
-        android:layout_marginRight="@dimen/margin"
-        android:layout_marginEnd="@dimen/margin"/>
+	<ImageView android:id="@+id/image"
+		android:layout_width="100dp"
+		android:layout_height="100dp"
+		android:layout_marginEnd="@dimen/margin"
+		android:layout_marginRight="@dimen/margin"
+		android:contentDescription="@string/news_item_image_content_description" />
 
-    <RelativeLayout
-        android:layout_toRightOf="@id/image"
-        android:layout_toEndOf="@id/image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+	<RelativeLayout android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_toEndOf="@id/image"
+		android:layout_toRightOf="@id/image"
+		android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textColor="#444"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            tools:text="News item title here."/>
+		<TextView android:id="@+id/title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textColor="#444"
+			android:textSize="14sp"
+			android:textStyle="bold"
+			tools:text="News item title here." />
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_below="@id/title"
-            android:textColor="#444"
-            android:textSize="12sp"
-            tools:text="News item description here."/>
+		<TextView android:id="@+id/description"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/title"
+			android:textColor="#444"
+			android:textSize="12sp"
+			tools:text="News item description here." />
 
-    </RelativeLayout>
+	</RelativeLayout>
 
 </RelativeLayout>

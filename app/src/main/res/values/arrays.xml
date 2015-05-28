@@ -1,34 +1,34 @@
 <resources>
-    <string-array name="region_keys">
-        <item>@string/north_america</item>
-        <item>@string/brazil</item>
-        <item>@string/european_union_northeast</item>
-        <item>@string/european_union_west</item>
-        <item>@string/korea</item>
-        <item>@string/latin_america_south</item>
-        <item>@string/latin_america_north</item>
-        <item>@string/oceanic</item>
-        <item>@string/turkey</item>
-        <item>@string/russia</item>
-    </string-array>
+	<string-array name="region_keys">
+		<item>@string/north_america</item>
+		<item>@string/brazil</item>
+		<item>@string/european_union_northeast</item>
+		<item>@string/european_union_west</item>
+		<item>@string/korea</item>
+		<item>@string/latin_america_south</item>
+		<item>@string/latin_america_north</item>
+		<item>@string/oceanic</item>
+		<item>@string/turkey</item>
+		<item>@string/russia</item>
+	</string-array>
 
-    <string-array name="region_values">
-        <item>"na"</item>
-        <item>"br"</item>
-        <item>"eune"</item>
-        <item>"euw"</item>
-        <item>"kr"</item>
-        <item>"las"</item>
-        <item>"lan"</item>
-        <item>"oce"</item>
-        <item>"tr"</item>
-        <item>"ru"</item>
-    </string-array>
+	<string-array name="region_values">
+		<item>"na"</item>
+		<item>"br"</item>
+		<item>"eune"</item>
+		<item>"euw"</item>
+		<item>"kr"</item>
+		<item>"las"</item>
+		<item>"lan"</item>
+		<item>"oce"</item>
+		<item>"tr"</item>
+		<item>"ru"</item>
+	</string-array>
 
-    <string-array name="navigation_menu_items">
-        <item>@string/news</item>
-        <item>@string/summoners</item>
-        <item>@string/settings</item>
-        <!--<item>@string/champions</item>-->
-    </string-array>
+	<string-array name="navigation_menu_items">
+		<item>@string/news</item>
+		<item>@string/summoners</item>
+		<item>@string/settings</item>
+		<!--<item>@string/champions</item>-->
+	</string-array>
 </resources>

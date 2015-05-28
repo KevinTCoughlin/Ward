@@ -1,23 +1,20 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    tools:context=".NewsFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	tools:context=".NewsFragment">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+	<android.support.v4.widget.SwipeRefreshLayout android:id="@+id/swipe_refresh"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            android:clipToPadding="false"
-            android:paddingTop="@dimen/marginHalf"
-            android:paddingBottom="@dimen/marginHalf"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
+		<android.support.v7.widget.RecyclerView android:id="@+id/list"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:clipToPadding="false"
+			android:paddingBottom="@dimen/marginHalf"
+			android:paddingTop="@dimen/marginHalf"
+			android:scrollbars="vertical" />
+	</android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

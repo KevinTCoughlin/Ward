@@ -46,12 +46,11 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.2.1'
     compile "org.parceler:parceler-api:0.2.15"
     provided "org.parceler:parceler:0.2.15"
-    compile ('com.squareup.retrofit:converter-simplexml:+') {
+    compile('com.squareup.retrofit:converter-simplexml:+') {
         exclude module: 'stax'
         exclude module: 'stax-api'
         exclude module: 'xpp3'
     }
-    compile 'com.github.machinarius:preferencefragment:0.1.1'
     compile 'com.facebook.stetho:stetho:1.0.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.3.0@aar') {
         transitive = true;

@@ -1,16 +1,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ListPreference
-        android:key="@string/pref_region_list_key"
-        android:title="@string/region_list_pref_title"
-        android:summary="@string/region_list_pref_summary"
-        android:entries="@array/region_keys"
-        android:entryValues="@array/region_values"
-        android:defaultValue="na"/>
+	<ListPreference
+		android:defaultValue="na"
+		android:entries="@array/region_keys"
+		android:entryValues="@array/region_values"
+		android:key="@string/pref_region_list_key"
+		android:summary="@string/region_list_pref_summary"
+		android:title="@string/region_list_pref_title" />
 
-    <CheckBoxPreference
-        android:key="@string/pref_ga_tracking_key"
-        android:defaultValue="true"
-        android:summary="@string/anonymous_analytics_summary"
-        android:title="@string/anonymous_analytics_title"/>
+	<CheckBoxPreference
+		android:defaultValue="true"
+		android:key="@string/pref_ga_tracking_key"
+		android:summary="@string/anonymous_analytics_summary"
+		android:title="@string/anonymous_analytics_title" />
 </PreferenceScreen>

@@ -7,46 +7,49 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.kevintcoughlin.ward.R;
 import com.kevintcoughlin.ward.models.Summoner;
 import com.squareup.picasso.Picasso;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public final class SummonersAdapter extends CursorRecyclerViewAdapter<SummonersAdapter.ViewHolder> {
-    private Context mContext;
+	private Context mContext;
 
-    public final static class ViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.name) TextView mNameView;
-        @InjectView(R.id.avatar) CircleImageView mAvatarView;
-        @InjectView(R.id.description) TextView mDescriptionView;
+	public SummonersAdapter(Context context, Cursor cursor) {
+		super(context, cursor);
+		mContext = context;
+	}
 
-        public ViewHolder(View v) {
-            super(v);
-            ButterKnife.inject(this, v);
-        }
-    }
+	@Override
+	public SummonersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+		final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.summoners_item, parent, false);
+		return new ViewHolder(v);
+	}
 
-    public SummonersAdapter(Context context, Cursor cursor) {
-        super(context, cursor);
-        mContext = context;
-    }
+	@Override
+	public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
+		final Summoner summoner = Summoner.fromCursor(cursor);
+		holder.mNameView.setText(summoner.getName());
+		holder.mDescriptionView.setText(String.format("Level %d • %s", summoner.getSummonerLevel(), summoner.getRegion().toUpperCase()));
+		Picasso.with(mContext)
+				.load("http://ddragon.leagueoflegends.com/cdn/4.10.7/img/profileicon/" + summoner.getProfileIconId() + ".png")
+				.into(holder.mAvatarView);
+	}
 
-    @Override public SummonersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.summoners_item, parent, false);
-        return new ViewHolder(v);
-    }
+	public final static class ViewHolder extends RecyclerView.ViewHolder {
+		@InjectView(R.id.name)
+		TextView mNameView;
+		@InjectView(R.id.avatar)
+		CircleImageView mAvatarView;
+		@InjectView(R.id.description)
+		TextView mDescriptionView;
 
-    @Override public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
-        final Summoner summoner = Summoner.fromCursor(cursor);
-        holder.mNameView.setText(summoner.getName());
-        holder.mDescriptionView.setText(String.format("Level %d • %s", summoner.getSummonerLevel(), summoner.getRegion().toUpperCase()));
-        Picasso.with(mContext)
-                .load("http://ddragon.leagueoflegends.com/cdn/4.10.7/img/profileicon/" + summoner.getProfileIconId() + ".png")
-                .into(holder.mAvatarView);
-    }
+		public ViewHolder(View v) {
+			super(v);
+			ButterKnife.inject(this, v);
+		}
+	}
 
 }

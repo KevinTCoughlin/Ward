@@ -1,20 +1,17 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:padding="20dp">
 
-    <EditText
-        android:id="@+id/summoner_name"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inputType="textNoSuggestions"
-        android:hint="@string/add_summoner_placeholder"/>
+	<EditText android:id="@+id/summoner_name"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:hint="@string/add_summoner_placeholder"
+		android:inputType="textNoSuggestions" />
 
-    <Spinner
-        android:id="@+id/regions"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+	<Spinner android:id="@+id/regions"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
 
 </LinearLayout>

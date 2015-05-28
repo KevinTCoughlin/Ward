@@ -6,22 +6,24 @@ import org.simpleframework.xml.Root;
 
 @Root(name = "rss", strict = false)
 public final class Rss {
-    @Element(name = "channel") private Channel channel;
-    @Attribute private String version;
+	@Element(name = "channel")
+	private Channel channel;
+	@Attribute
+	private String version;
 
-    public Channel getChannel () {
-        return channel;
-    }
+	public Channel getChannel() {
+		return channel;
+	}
 
-    public void setChannel (Channel channel) {
-        this.channel = channel;
-    }
+	public void setChannel(Channel channel) {
+		this.channel = channel;
+	}
 
-    public String getVersion () {
-        return version;
-    }
+	public String getVersion() {
+		return version;
+	}
 
-    public void setVersion (String version) {
-        this.version = version;
-    }
+	public void setVersion(String version) {
+		this.version = version;
+	}
 }
