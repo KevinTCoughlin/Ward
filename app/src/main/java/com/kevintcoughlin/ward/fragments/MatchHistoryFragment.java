@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class MatchHistoryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, Callback<Map<String, List<MatchSummary>>> {
-	public static final String TAG = "Match History";
+	public static final String TAG = MatchHistoryFragment.class.getSimpleName();
 	private final String MATCHES_KEY = "matches"; // @TODO: Move into API service
 	private final String ACTION_PAGINATION = "Pagination";
 	@InjectView(R.id.swipe_refresh)
@@ -50,6 +50,11 @@ public final class MatchHistoryFragment extends Fragment implements SwipeRefresh
 		final View view = inflater.inflate(R.layout.fragment_match_history, container, false);
 		ButterKnife.inject(this, view);
 
+		final Bundle bundle = getArguments();
+		if (bundle != null) {
+			RiotGamesClient.getClient().listMatchesById(bundle.getString("region"), bundle.getLong("id"), this);
+		}
+
 		mContext = this.getActivity().getApplicationContext();
 		mSwipeRefreshLayout.setOnRefreshListener(this);
 		mSwipeRefreshLayout.setColorSchemeResources(R.color.purple_400, R.color.purple_500, R.color.purple_600);
@@ -58,13 +63,12 @@ public final class MatchHistoryFragment extends Fragment implements SwipeRefresh
 		mRecyclerView.setLayoutManager(mLayoutManager);
 		mAdapter = new MatchSummariesAdapter(mContext, mMatchSummaries);
 		mRecyclerView.setAdapter(mAdapter);
-		mRecyclerView.setOnScrollListener(new InfiniteRecyclerOnScrollListener(mLayoutManager) {
+		mRecyclerView.addOnScrollListener(new InfiniteRecyclerOnScrollListener(mLayoutManager) {
 			@Override
 			public void onLoadMore(final int currentPage) {
 				final int index = currentPage * RiotGamesService.MATCH_HISTORY_LIMIT - 1;
-				final Summoner summoner = Parcels.unwrap(getArguments().getParcelable(Summoner.TAG));
-
-				RiotGamesClient.getClient(summoner.getRegion()).listMatchesById(summoner.getRegion(), summoner.getId(), index, new Callback<Map<String, List<MatchSummary>>>() {
+				RiotGamesClient.getClient(bundle.getString("region")).listMatchesById(bundle.getString("region"),
+						bundle.getLong("id"), index, new Callback<Map<String, List<MatchSummary>>>() {
 					@Override
 					public void success(Map<String, List<MatchSummary>> matches, Response response) {
 						final List<MatchSummary> matchHistory = matches.get(MATCHES_KEY);
@@ -92,9 +96,7 @@ public final class MatchHistoryFragment extends Fragment implements SwipeRefresh
 			}
 		});
 
-		final Summoner summoner = Parcels.unwrap(getArguments().getParcelable(Summoner.TAG));
-		getActivity().setTitle(summoner.getName());
-		RiotGamesClient.getClient(summoner.getRegion()).listMatchesById(summoner.getRegion(), summoner.getId(), this);
+		getActivity().setTitle("Match History");
 
 		return view;
 	}

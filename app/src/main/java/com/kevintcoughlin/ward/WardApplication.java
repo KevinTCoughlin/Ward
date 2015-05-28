@@ -6,22 +6,19 @@ import android.preference.PreferenceManager;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
-import com.kevintcoughlin.ward.database.CupboardSQLiteOpenHelper;
 import com.kevintcoughlin.ward.http.RiotGamesClient;
 import com.kevintcoughlin.ward.models.Champion;
 import com.kevintcoughlin.ward.models.ChampionData;
-import nl.qbusict.cupboard.DatabaseCompartment;
+import com.parse.Parse;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import java.util.Map;
 
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
-
 public final class WardApplication extends Application {
-	private final CupboardSQLiteOpenHelper db = new CupboardSQLiteOpenHelper(this);
-
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -32,6 +29,12 @@ public final class WardApplication extends Application {
 					.enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
 					.build());
 		}
+
+		Parse.enableLocalDatastore(this);
+		Parse.initialize(this, "id", "key");
+		ParseUser.enableAutomaticUser();
+		ParseUser.getCurrentUser().increment("RunCount");
+		ParseUser.getCurrentUser().saveInBackground();
 
 		final String TRACKING_PREF_KEY = getResources().getString(R.string.pref_ga_tracking_key);
 		final SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -49,9 +52,15 @@ public final class WardApplication extends Application {
 		RiotGamesClient.getClient().listChampionsById("na", false, new Callback<ChampionData>() {
 			@Override
 			public void success(ChampionData data, Response response) {
-				final DatabaseCompartment dbc = cupboard().withDatabase(db.getWritableDatabase());
 				for (final Map.Entry<String, Champion> entry : data.getData().entrySet()) {
-					dbc.put(entry.getValue());
+					final Champion champion = entry.getValue();
+					final ParseObject c = new ParseObject("Champion");
+					c.put("id", champion.getId());
+					c.put("name", champion.getName());
+					c.put("title", champion.getTitle());
+					c.put("key", champion.getKey());
+					c.put("freeToPlay", champion.isFreeToPlay());
+					c.pinInBackground();
 				}
 			}
 

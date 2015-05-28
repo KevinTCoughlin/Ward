@@ -1,10 +1,7 @@
 package com.kevintcoughlin.ward.models;
 
-import android.database.Cursor;
 import com.google.gson.annotations.SerializedName;
 import org.parceler.Parcel;
-
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 @Parcel
 public final class Summoner {
@@ -20,10 +17,6 @@ public final class Summoner {
 
 	public Summoner() {
 
-	}
-
-	public static Summoner fromCursor(Cursor cursor) {
-		return cupboard().withCursor(cursor).get(Summoner.class);
 	}
 
 	public long getId() {

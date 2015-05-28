@@ -20,7 +20,7 @@ import com.kevintcoughlin.ward.R;
 import com.kevintcoughlin.ward.adapters.DrawerNavigationAdapter;
 import com.kevintcoughlin.ward.fragments.*;
 import com.kevintcoughlin.ward.models.DataDragonChampion;
-import com.kevintcoughlin.ward.models.Summoner;
+import com.parse.ParseObject;
 import io.fabric.sdk.android.Fabric;
 import org.parceler.Parcels;
 
@@ -108,10 +108,11 @@ public final class SummonersActivity extends AppCompatActivity implements
 	}
 
 	@Override
-	public void onSummonerSelectedListener(Summoner summoner) {
+	public void onSummonerSelectedListener(ParseObject summoner) {
 		final Bundle bundle = new Bundle();
 		final Fragment fragment = new MatchHistoryFragment();
-		bundle.putParcelable(Summoner.TAG, Parcels.wrap(summoner));
+		bundle.putLong("id", summoner.getLong("id"));
+		bundle.putString("region", summoner.getString("region"));
 		fragment.setArguments(bundle);
 		replaceFragment(fragment);
 	}

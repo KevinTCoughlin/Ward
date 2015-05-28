@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -24,19 +23,18 @@ import com.google.android.gms.analytics.Tracker;
 import com.kevintcoughlin.ward.R;
 import com.kevintcoughlin.ward.WardApplication;
 import com.kevintcoughlin.ward.adapters.SummonersAdapter;
-import com.kevintcoughlin.ward.database.CupboardSQLiteOpenHelper;
 import com.kevintcoughlin.ward.http.RiotGamesClient;
 import com.kevintcoughlin.ward.models.Summoner;
 import com.melnykov.fab.FloatingActionButton;
-import nl.qbusict.cupboard.DatabaseCompartment;
+import com.parse.*;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public final class FavoriteSummonersFragment extends Fragment implements RecyclerView.OnItemTouchListener, FloatingActionButton.OnClickListener {
 	public static final String TAG = "Summoners";
@@ -44,11 +42,8 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
 	private final String ACTION_REMOVE = "Remove";
 	private final String ACTION_SEARCH = "Search";
 	private final String ACTION_MATCH_HISTORY = "Match History";
-	@InjectView(R.id.list)
-	RecyclerView mRecyclerView;
-	@InjectView(R.id.fab)
-	FloatingActionButton mFab;
-	private CupboardSQLiteOpenHelper db;
+	@InjectView(R.id.list) RecyclerView mRecyclerView;
+	@InjectView(R.id.fab) FloatingActionButton mFab;
 	private OnSummonerSelectedListener mListener;
 	private SummonersAdapter mAdapter;
 	private GestureDetectorCompat mDetector;
@@ -73,15 +68,26 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
 
 		getActivity().setTitle(TAG);
 		mRecyclerView.setHasFixedSize(true);
-		final LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
-		mRecyclerView.setLayoutManager(mLayoutManager);
-		mAdapter = new SummonersAdapter(mContext, getFollowedSummoners());
-		mAdapter.setHasStableIds(true);
+		mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+
+		final ParseQuery<ParseObject> query = ParseQuery.getQuery("Summoner");
+		query.whereEqualTo("followedBy", ParseUser.getCurrentUser());
+		query.findInBackground(new FindCallback<ParseObject>() {
+			public void done(List<ParseObject> summoners, ParseException e) {
+				if (e == null) {
+					mAdapter = new SummonersAdapter(getActivity(), summoners);
+					mAdapter.setHasStableIds(true);
+					mRecyclerView.setAdapter(mAdapter);
+					mAdapter.notifyDataSetChanged();
+				} else {
+					Timber.d("score", "Error: " + e.getMessage());
+				}
+			}
+		});
+
 		mFab.setOnClickListener(this);
-		mRecyclerView.setAdapter(mAdapter);
 		mDetector = new GestureDetectorCompat(mContext, new RecyclerViewOnGestureListener());
 		mRecyclerView.addOnItemTouchListener(this);
-
 		return view;
 	}
 
@@ -90,7 +96,6 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
 		super.onCreate(savedInstanceState);
 
 		mContext = getActivity();
-		db = new CupboardSQLiteOpenHelper(mContext);
 		mTracker = ((WardApplication) getActivity().getApplication()).getTracker();
 		mTracker.setScreenName(TAG);
 		mTracker.send(new HitBuilders.AppViewBuilder().build());
@@ -99,10 +104,6 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
 	@Override
 	public void onClick(View v) {
 		promptAddSummoner();
-	}
-
-	private Cursor getFollowedSummoners() {
-		return cupboard().withDatabase(db.getWritableDatabase()).query(Summoner.class).getCursor();
 	}
 
 	private void promptAddSummoner() {
@@ -174,19 +175,24 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
 		RiotGamesClient.getClient(region).listSummonersByNames(region, name, new Callback<Map<String, Summoner>>() {
 			@Override
 			public void success(Map<String, Summoner> stringSummonerMap, Response response) {
-				final DatabaseCompartment dbc = cupboard().withDatabase(db.getWritableDatabase());
 				for (final Map.Entry<String, Summoner> pair : stringSummonerMap.entrySet()) {
 					final Summoner summoner = pair.getValue();
-					summoner.setRegion(region);
-					dbc.put(summoner);
+					final ParseObject s = new ParseObject("Summoner");
+					s.put("id", summoner.getId());
+					s.put("name", summoner.getName());
+					s.put("profileIconId", summoner.getProfileIconId());
+					s.put("revisionDate", summoner.getRevisionDate());
+					s.put("summonerLevel", summoner.getSummonerLevel());
+					s.put("region", region);
+					s.addUnique("followedBy", ParseUser.getCurrentUser());
+					s.saveEventually();
+					mAdapter.add(s);
 					mTracker.send(new HitBuilders.EventBuilder()
 							.setCategory(TAG)
 							.setAction(ACTION_ADD)
-							.setLabel(summoner.getName())
+							.setLabel(s.getString("name"))
 							.build());
 				}
-
-				mAdapter.swapCursor(dbc.query(Summoner.class).getCursor());
 			}
 
 			@Override
@@ -197,9 +203,7 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
 	}
 
 	private void removeSummoner(long id) {
-		final DatabaseCompartment dbc = cupboard().withDatabase(db.getWritableDatabase());
-		dbc.delete(Summoner.class, id);
-		mAdapter.swapCursor(dbc.query(Summoner.class).getCursor());
+		// @TODO: implement
 	}
 
 	@Override
@@ -212,21 +216,21 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
 	}
 
 	public interface OnSummonerSelectedListener {
-		public void onSummonerSelectedListener(Summoner summoner);
+		void onSummonerSelectedListener(ParseObject object);
 	}
 
 	private class RecyclerViewOnGestureListener extends GestureDetector.SimpleOnGestureListener {
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
 			final View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-			final int position = mRecyclerView.getChildPosition(view);
+			final int position = mRecyclerView.getChildAdapterPosition(view);
 			if (position > -1) {
-				final Summoner summoner = cupboard().withDatabase(db.getReadableDatabase()).get(Summoner.class, mAdapter.getItemId(position));
+				final ParseObject summoner = mAdapter.get(position);
 				mListener.onSummonerSelectedListener(summoner);
 				mTracker.send(new HitBuilders.EventBuilder()
 						.setCategory(TAG)
 						.setAction(ACTION_MATCH_HISTORY)
-						.setLabel(summoner.getName())
+						.setLabel(summoner.getString("name"))
 						.build());
 			}
 			return super.onSingleTapConfirmed(e);
@@ -234,9 +238,9 @@ public final class FavoriteSummonersFragment extends Fragment implements Recycle
 
 		public void onLongPress(MotionEvent e) {
 			final View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-			final int position = mRecyclerView.getChildPosition(view);
-			final Summoner summoner = cupboard().withDatabase(db.getReadableDatabase()).get(Summoner.class, mAdapter.getItemId(position));
-			promptDeleteSummoner(summoner);
+			final int position = mRecyclerView.getChildAdapterPosition(view);
+			// @TODO: re-implement
+			//promptDeleteSummoner(summoner);
 			super.onLongPress(e);
 		}
 	}

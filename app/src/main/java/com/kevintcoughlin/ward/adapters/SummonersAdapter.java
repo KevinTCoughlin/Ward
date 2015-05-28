@@ -1,7 +1,6 @@
 package com.kevintcoughlin.ward.adapters;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,43 +9,57 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.kevintcoughlin.ward.R;
-import com.kevintcoughlin.ward.models.Summoner;
+import com.parse.ParseObject;
 import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public final class SummonersAdapter extends CursorRecyclerViewAdapter<SummonersAdapter.ViewHolder> {
+import java.util.List;
+
+public final class SummonersAdapter extends RecyclerView.Adapter<SummonersAdapter.SummonerViewHolder> {
 	private Context mContext;
+	private List<ParseObject> mItems;
 
-	public SummonersAdapter(Context context, Cursor cursor) {
-		super(context, cursor);
-		mContext = context;
+	public SummonersAdapter(Context mContext, List<ParseObject> mItems) {
+		this.mContext = mContext;
+		this.mItems = mItems;
 	}
 
 	@Override
-	public SummonersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+	public SummonerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.summoners_item, parent, false);
-		return new ViewHolder(v);
+		return new SummonerViewHolder(v);
 	}
 
 	@Override
-	public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
-		final Summoner summoner = Summoner.fromCursor(cursor);
-		holder.mNameView.setText(summoner.getName());
-		holder.mDescriptionView.setText(String.format("Level %d • %s", summoner.getSummonerLevel(), summoner.getRegion().toUpperCase()));
+	public void onBindViewHolder(SummonerViewHolder holder, int position) {
+		final ParseObject object = mItems.get(position);
+		holder.mNameView.setText(object.getString("name"));
+		holder.mDescriptionView.setText(String.format("Level %d • %s", object.getLong("summonerLevel"), object.getString("region")));
 		Picasso.with(mContext)
-				.load("http://ddragon.leagueoflegends.com/cdn/4.10.7/img/profileicon/" + summoner.getProfileIconId() + ".png")
+				.load("http://ddragon.leagueoflegends.com/cdn/4.10.7/img/profileicon/" + object.getInt("profileIconId") + ".png")
 				.into(holder.mAvatarView);
 	}
 
-	public final static class ViewHolder extends RecyclerView.ViewHolder {
-		@InjectView(R.id.name)
-		TextView mNameView;
-		@InjectView(R.id.avatar)
-		CircleImageView mAvatarView;
-		@InjectView(R.id.description)
-		TextView mDescriptionView;
+	@Override
+	public int getItemCount() {
+		return mItems.size();
+	}
 
-		public ViewHolder(View v) {
+	public void add(ParseObject object) {
+		mItems.add(object);
+		notifyItemInserted(mItems.size());
+	}
+
+	public ParseObject get(int position) {
+		return mItems.get(position);
+	}
+
+	public final static class SummonerViewHolder extends RecyclerView.ViewHolder {
+		@InjectView(R.id.name) TextView mNameView;
+		@InjectView(R.id.avatar) CircleImageView mAvatarView;
+		@InjectView(R.id.description) TextView mDescriptionView;
+
+		public SummonerViewHolder(View v) {
 			super(v);
 			ButterKnife.inject(this, v);
 		}

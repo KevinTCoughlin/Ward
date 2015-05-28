@@ -43,6 +43,7 @@
 			android:maxLines="1"
 			android:textColor="#444"
 			android:textSize="12sp"
+			android:textAllCaps="true"
 			tools:text="Level 30 • NA" />
 
 	</RelativeLayout>
