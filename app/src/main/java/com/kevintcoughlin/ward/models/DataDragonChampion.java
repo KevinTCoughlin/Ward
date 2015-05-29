@@ -1,7 +1,7 @@
 package com.kevintcoughlin.ward.models;
 
-public final class DataDragonChampion extends BaseChampion {
-	public static final String TAG = "DataDragonChampion";
+public final class DataDragonChampion extends Champion {
+	public static final String TAG = DataDragonChampion.class.getSimpleName();
 	public Image image;
 
 	public final class Image {

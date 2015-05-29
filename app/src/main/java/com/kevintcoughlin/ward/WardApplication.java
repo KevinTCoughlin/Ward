@@ -10,12 +10,13 @@ import com.kevintcoughlin.ward.http.RiotGamesClient;
 import com.kevintcoughlin.ward.models.Champion;
 import com.kevintcoughlin.ward.models.ChampionData;
 import com.parse.Parse;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public final class WardApplication extends Application {
@@ -31,7 +32,7 @@ public final class WardApplication extends Application {
 		}
 
 		Parse.enableLocalDatastore(this);
-		Parse.initialize(this, "id", "key");
+		Parse.initialize(this, null, null);
 		ParseUser.enableAutomaticUser();
 		ParseUser.getCurrentUser().increment("RunCount");
 		ParseUser.getCurrentUser().saveInBackground();
@@ -48,31 +49,38 @@ public final class WardApplication extends Application {
 			}
 		});
 
-		// @TODO: Don't fetch this data every time
-		RiotGamesClient.getClient().listChampionsById("na", false, new Callback<ChampionData>() {
-			@Override
-			public void success(ChampionData data, Response response) {
-				for (final Map.Entry<String, Champion> entry : data.getData().entrySet()) {
-					final Champion champion = entry.getValue();
-					final ParseObject c = new ParseObject("Champion");
-					c.put("id", champion.getId());
-					c.put("name", champion.getName());
-					c.put("title", champion.getTitle());
-					c.put("key", champion.getKey());
-					c.put("freeToPlay", champion.isFreeToPlay());
-					c.pinInBackground();
-				}
-			}
-
-			@Override
-			public void failure(RetrofitError error) {
-
-			}
-		});
+		new ChampionMap();
 	}
+
 
 	public synchronized Tracker getTracker() {
 		final GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
 		return analytics.newTracker(R.xml.global_tracker);
+	}
+
+	public static final class ChampionMap {
+		private static final HashMap<String, String> mChampionMap = new HashMap<>();
+
+		public ChampionMap() {
+			// @TODO: Don't fetch this data every time
+			RiotGamesClient.getClient().listChampionsById("na", false, new Callback<ChampionData>() {
+				@Override
+				public void success(ChampionData data, Response response) {
+					for (final Map.Entry<String, Champion> entry : data.getData().entrySet()) {
+						final Champion champion = entry.getValue();
+						mChampionMap.put(champion.getId(), champion.getKey());
+					}
+				}
+
+				@Override
+				public void failure(RetrofitError error) {
+					Timber.e("GetChampions", error.getMessage());
+				}
+			});
+		}
+
+		public static String getChampionNameById(String id) {
+			return mChampionMap.get(id);
+		}
 	}
 }

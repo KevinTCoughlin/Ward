@@ -1,6 +1,5 @@
 package com.kevintcoughlin.ward.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,16 +12,12 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.kevintcoughlin.ward.R;
-import com.kevintcoughlin.ward.WardApplication;
 import com.kevintcoughlin.ward.adapters.MatchSummariesAdapter;
 import com.kevintcoughlin.ward.http.RiotGamesClient;
 import com.kevintcoughlin.ward.http.RiotGamesService;
 import com.kevintcoughlin.ward.listeners.InfiniteRecyclerOnScrollListener;
 import com.kevintcoughlin.ward.models.MatchSummary;
-import com.kevintcoughlin.ward.models.Summoner;
-import org.parceler.Parcels;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -32,7 +27,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public final class MatchHistoryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, Callback<Map<String, List<MatchSummary>>> {
+public final class MatchHistoryFragment extends TrackedFragment implements SwipeRefreshLayout.OnRefreshListener,
+		Callback<Map<String, List<MatchSummary>>> {
 	public static final String TAG = MatchHistoryFragment.class.getSimpleName();
 	private final String MATCHES_KEY = "matches"; // @TODO: Move into API service
 	private final String ACTION_PAGINATION = "Pagination";
@@ -43,7 +39,6 @@ public final class MatchHistoryFragment extends Fragment implements SwipeRefresh
 	private MatchSummariesAdapter mAdapter;
 	private ArrayList<MatchSummary> mMatchSummaries = new ArrayList<>();
 	private Context mContext;
-	private Tracker mTracker;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -102,15 +97,6 @@ public final class MatchHistoryFragment extends Fragment implements SwipeRefresh
 	}
 
 	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		mTracker = ((WardApplication) getActivity().getApplication()).getTracker();
-		mTracker.setScreenName(TAG);
-		mTracker.send(new HitBuilders.AppViewBuilder().build());
-	}
-
-	@Override
 	public void success(Map<String, List<MatchSummary>> matches, Response response) {
 		final List<MatchSummary> matchHistory = matches.get(MATCHES_KEY);
 		if (matchHistory == null || matchHistory.size() <= 0) {
@@ -133,7 +119,9 @@ public final class MatchHistoryFragment extends Fragment implements SwipeRefresh
 
 	@Override
 	public void onRefresh() {
-		final Summoner summoner = Parcels.unwrap(getArguments().getParcelable(Summoner.TAG));
-		RiotGamesClient.getClient(summoner.getRegion()).listMatchesById(summoner.getRegion(), summoner.getId(), this);
+		final Bundle bundle = getArguments();
+		if (bundle != null) {
+			RiotGamesClient.getClient().listMatchesById(bundle.getString("region"), bundle.getLong("id"), this);
+		}
 	}
 }

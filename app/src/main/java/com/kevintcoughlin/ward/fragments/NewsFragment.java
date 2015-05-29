@@ -1,6 +1,5 @@
 package com.kevintcoughlin.ward.fragments;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,9 +13,7 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.kevintcoughlin.ward.R;
-import com.kevintcoughlin.ward.WardApplication;
 import com.kevintcoughlin.ward.adapters.NewsAdapter;
 import com.kevintcoughlin.ward.http.LeagueOfLegendsNewsClient;
 import com.kevintcoughlin.ward.models.news.Item;
@@ -29,7 +26,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class NewsFragment extends Fragment implements RecyclerView.OnItemTouchListener, Callback<Rss>, SwipeRefreshLayout.OnRefreshListener {
+public final class NewsFragment extends TrackedFragment implements RecyclerView.OnItemTouchListener, Callback<Rss>, SwipeRefreshLayout.OnRefreshListener {
 	public static final String TAG = "News";
 	private final String region = "na";
 	private final String language = "en";
@@ -40,7 +37,6 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
 	private RecyclerView.Adapter mAdapter;
 	private ArrayList<Item> mNewsDataSet = new ArrayList<>();
 	private GestureDetectorCompat mDetector;
-	private Tracker mTracker;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,12 +54,7 @@ public final class NewsFragment extends Fragment implements RecyclerView.OnItemT
 		mRecyclerView.setAdapter(mAdapter);
 		mDetector = new GestureDetectorCompat(getActivity(), new RecyclerViewOnGestureListener());
 		mRecyclerView.addOnItemTouchListener(this);
-
 		LeagueOfLegendsNewsClient.getClient(region, language).getFeed(this);
-
-		mTracker = ((WardApplication) getActivity().getApplication()).getTracker();
-		mTracker.setScreenName(TAG);
-		mTracker.send(new HitBuilders.AppViewBuilder().build());
 
 		return view;
 	}

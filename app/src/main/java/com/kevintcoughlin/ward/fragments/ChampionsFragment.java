@@ -1,7 +1,6 @@
 package com.kevintcoughlin.ward.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ChampionsFragment extends Fragment implements Callback<DataDragonChampionsData>, RecyclerView.OnItemTouchListener {
+public final class ChampionsFragment extends TrackedFragment implements Callback<DataDragonChampionsData>, RecyclerView.OnItemTouchListener {
 	public static final String TAG = "Champions";
 	private final ArrayList<DataDragonChampion> mChampions = new ArrayList<>();
 	private final HashMap<Integer, DataDragonChampion> mChampionsData = new HashMap<>();

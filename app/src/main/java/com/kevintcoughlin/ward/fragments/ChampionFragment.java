@@ -1,6 +1,5 @@
 package com.kevintcoughlin.ward.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,7 +8,7 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import com.kevintcoughlin.ward.R;
 
-public final class ChampionFragment extends Fragment {
+public final class ChampionFragment extends TrackedFragment {
 	public static final String TAG = "Champion";
 
 	@Override
