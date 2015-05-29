@@ -32,7 +32,7 @@ public final class WardApplication extends Application {
 		}
 
 		Parse.enableLocalDatastore(this);
-		Parse.initialize(this, null, null);
+		Parse.initialize(this, Config.PARSE_CLIENT_ID.value(), Config.PARSE_CLIENT_KEY.value());
 		ParseUser.enableAutomaticUser();
 		ParseUser.getCurrentUser().increment("RunCount");
 		ParseUser.getCurrentUser().saveInBackground();

@@ -44,6 +44,7 @@ public final class FavoriteSummonersFragment extends TrackedFragment implements 
 	private SummonersAdapter mAdapter;
 	private GestureDetectorCompat mDetector;
 	private Context mContext;
+	private ActionMode mActionMode;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -209,11 +210,43 @@ public final class FavoriteSummonersFragment extends TrackedFragment implements 
 		}
 
 		public void onLongPress(MotionEvent e) {
-			final View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-			final int position = mRecyclerView.getChildAdapterPosition(view);
-			// @TODO: re-implement
-			//promptDeleteSummoner(summoner);
-			super.onLongPress(e);
+			if (mActionMode == null) {
+				// Start the CAB using the ActionMode.Callback defined above
+				mActionMode = getActivity().startActionMode(mActionModeCallback);
+				final View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+				view.setSelected(true);
+			}
 		}
 	}
+
+	private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			MenuInflater inflater = mode.getMenuInflater();
+			inflater.inflate(R.menu.summoner_cab, menu);
+			return true;
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			switch (item.getItemId()) {
+			case R.id.action_delete:
+				Toast.makeText(getActivity(), "Thingy", Toast.LENGTH_LONG).show();
+				mode.finish();
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			mActionMode = null;
+		}
+	};
 }

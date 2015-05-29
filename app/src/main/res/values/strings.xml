@@ -37,4 +37,5 @@
 	<string name="pref_ga_tracking_key">ga</string>
 	<string name="pref_region_list_key">region</string>
 	<string name="champions">Champions</string>
+	<string name="action_delete">Delete</string>
 </resources>

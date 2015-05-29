@@ -62,7 +62,7 @@ public final class SummonersActivity extends AppCompatActivity implements
 	}
 
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
+	public void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		mDrawerToggle.syncState();
 	}
