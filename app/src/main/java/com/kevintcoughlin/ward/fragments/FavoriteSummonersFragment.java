@@ -34,7 +34,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public final class FavoriteSummonersFragment extends TrackedFragment implements RecyclerView.OnItemTouchListener, FloatingActionButton.OnClickListener {
+public final class FavoriteSummonersFragment extends TrackedFragment implements RecyclerView.OnItemTouchListener,
+		FloatingActionButton.OnClickListener {
+
 	public static final String TAG = FavoriteSummonersFragment.class.getSimpleName();
 	private final String ACTION_ADD = "Add";
 	private final String ACTION_SEARCH = "Search";
@@ -72,18 +74,6 @@ public final class FavoriteSummonersFragment extends TrackedFragment implements 
 		mDetector = new GestureDetectorCompat(mContext, new RecyclerViewOnGestureListener());
 		mRecyclerView.addOnItemTouchListener(this);
 
-		final ParseQuery<ParseObject> local = ParseQuery.getQuery("Summoner");
-		local.fromLocalDatastore();
-		local.findInBackground(new FindCallback<ParseObject>() {
-			public void done(List<ParseObject> summoners, ParseException e) {
-				if (e == null) {
-					mAdapter.set(summoners);
-				} else {
-					Timber.d(TAG, e.getMessage());
-				}
-			}
-		});
-
 		final ParseQuery<ParseObject> remote = ParseQuery.getQuery("Summoner");
 		remote.whereEqualTo("followedBy", ParseUser.getCurrentUser());
 		remote.findInBackground(new FindCallback<ParseObject>() {
@@ -91,7 +81,6 @@ public final class FavoriteSummonersFragment extends TrackedFragment implements 
 			public void done(List<ParseObject> list, ParseException e) {
 				if (e == null) {
 					mAdapter.set(list);
-					ParseObject.pinAllInBackground(list);
 				} else {
 					Timber.e(TAG, e.getMessage());
 				}
@@ -188,6 +177,11 @@ public final class FavoriteSummonersFragment extends TrackedFragment implements 
 	public void onTouchEvent(RecyclerView rv, MotionEvent e) {
 	}
 
+	@Override
+	public void onRequestDisallowInterceptTouchEvent(boolean b) {
+
+	}
+
 	public interface OnSummonerSelectedListener {
 		void onSummonerSelectedListener(ParseObject object);
 	}
@@ -210,12 +204,11 @@ public final class FavoriteSummonersFragment extends TrackedFragment implements 
 		}
 
 		public void onLongPress(MotionEvent e) {
-			if (mActionMode == null) {
-				// Start the CAB using the ActionMode.Callback defined above
-				mActionMode = getActivity().startActionMode(mActionModeCallback);
-				final View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-				view.setSelected(true);
-			}
+//			if (mActionMode == null) {
+//				mActionMode = getActivity().startActionMode(mActionModeCallback);
+//				final View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+//				view.setSelected(true);
+//			}
 		}
 	}
 

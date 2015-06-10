@@ -104,6 +104,11 @@ public final class NewsFragment extends TrackedFragment implements RecyclerView.
 	}
 
 	@Override
+	public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+	}
+
+	@Override
 	public void onRefresh() {
 		LeagueOfLegendsNewsClient.getClient(region, language).getFeed(this);
 	}

@@ -107,8 +107,13 @@ public final class ChampionsFragment extends TrackedFragment implements Callback
 
 	}
 
+	@Override
+	public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+	}
+
 	public interface OnChampionSelectedListener {
-		public void onChampionSelectedListener(DataDragonChampion champion);
+		void onChampionSelectedListener(DataDragonChampion champion);
 	}
 
 	private class RecyclerViewOnGestureListener extends GestureDetector.SimpleOnGestureListener {
